@@ -1,0 +1,20 @@
+
+/* ChartsPage.css */
+
+.chart-card {
+  margin-bottom: 20px;
+}
+
+.charts-section {
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+.recent-orders-section {
+  margin-top: 20px;
+}
+
+.recent-orders-list {
+  list-style-type: none;
+  padding: 0;
+}

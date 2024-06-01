@@ -1,0 +1,12 @@
+.ant-table-cell {
+  font-size: 0.8rem !important;
+  width: max-content !important;
+}
+colgroup {
+  display: flex !important;
+  width: 100px !important;
+}
+
+.ant-table-filter-column {
+  width: 100px !important;
+}

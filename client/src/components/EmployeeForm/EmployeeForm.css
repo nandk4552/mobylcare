@@ -1,0 +1,25 @@
+/* EmployeeForm.css */
+
+.employee-form .ant-form-item {
+  margin-bottom: 16px; /* Increase the bottom margin for better spacing */
+}
+
+.employee-form .ant-input,
+.employee-form .ant-select-selector,
+.employee-form .ant-picker {
+  border-radius: 8px; /* Rounded corners for inputs, selects, and date pickers */
+}
+
+.employee-form .ant-form-item-label {
+  font-weight: bold; /* Bold labels for better readability */
+}
+
+.employee-form .ant-btn-primary {
+  width: 100%;
+  font-size: 16px;
+  padding: 10px;
+}
+
+.employee-form {
+  margin: 0.5rem !important;
+}
