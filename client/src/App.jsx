@@ -1,106 +1,194 @@
-// routing
+import React, { lazy, Suspense, useRef } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import {
   Navigate,
   Route,
   BrowserRouter as Router,
   Routes,
+  useLocation,
 } from "react-router-dom";
-import PasswordReset from "./components/PasswordReset/PasswordReset";
-import WhatsAppSender from "./components/WhatsAppSender/WhatsAppSender";
-import BillsPage from "./pages/BillsPage/BillsPage";
-import ChartsPage from "./pages/ChartsPage/ChartsPage";
-import CustomerPage from "./pages/CustomerPage/CustomerPage";
-import EmployeesPage from "./pages/EmployeesPage/EmployeesPage";
-import HomePage from "./pages/HomePage/HomePage";
-import InventoryPage from "./pages/InventoryPage/InventoryPage";
-import Login from "./pages/Login/Login";
-import OrdersPage from "./pages/OrdersPage/OrdersPage";
-import Register from "./pages/Register/Register";
+import { hideLoading, showLoading } from "./redux/rootReducer";
+import LoadingBar from "react-top-loading-bar";
+import Spinner from "./components/Spinner/Spinner";
+
+const PasswordReset = lazy(() =>
+  import("./components/PasswordReset/PasswordReset")
+);
+const WhatsAppSender = lazy(() =>
+  import("./components/WhatsAppSender/WhatsAppSender")
+);
+const BillsPage = lazy(() => import("./pages/BillsPage/BillsPage"));
+const ChartsPage = lazy(() => import("./pages/ChartsPage/ChartsPage"));
+const CustomerPage = lazy(() => import("./pages/CustomerPage/CustomerPage"));
+const EmployeesPage = lazy(() => import("./pages/EmployeesPage/EmployeesPage"));
+const HomePage = lazy(() => import("./pages/HomePage/HomePage"));
+const InventoryPage = lazy(() => import("./pages/InventoryPage/InventoryPage"));
+const Login = lazy(() => import("./pages/Login/Login"));
+const OrdersPage = lazy(() => import("./pages/OrdersPage/OrdersPage"));
+const Register = lazy(() => import("./pages/Register/Register"));
+
+const Loader = () => <Spinner />;
+
 function App() {
   return (
-    <>
-      <Router>
-        <Routes>
-          <Route
-            path="/"
-            element={
-              <ProtectedRoutes>
-                <HomePage />
-              </ProtectedRoutes>
-            }
-          />
-          <Route
-            path="/bills"
-            element={
-              <ProtectedRoutes>
-                <BillsPage />
-              </ProtectedRoutes>
-            }
-          />
-          <Route
-            path="/customers"
-            element={
-              <ProtectedRoutes>
-                <CustomerPage />
-              </ProtectedRoutes>
-            }
-          />
-          <Route
-            path="/orders"
-            element={
-              <ProtectedRoutes>
-                <OrdersPage />
-              </ProtectedRoutes>
-            }
-          />
-          <Route
-            path="/charts"
-            element={
-              <ProtectedRoutes>
-                <ChartsPage />
-              </ProtectedRoutes>
-            }
-          />
-          <Route
-            path="/whatsapp"
-            element={
-              <ProtectedRoutes>
-                <WhatsAppSender />
-              </ProtectedRoutes>
-            }
-          />
-          <Route
-            path="/employees"
-            element={
-              <ProtectedRoutes>
-                <EmployeesPage />
-              </ProtectedRoutes>
-            }
-          />
-          <Route
-            path="/inventory"
-            element={
-              <ProtectedRoutes>
-                <InventoryPage />
-              </ProtectedRoutes>
-            }
-          />
+    <Router>
+      <Main />
+    </Router>
+  );
+}
 
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
-          <Route path="/password-reset" element={<PasswordReset />} />
-        </Routes>
-      </Router>
+function Main() {
+  const dispatch = useDispatch();
+  const loading = useSelector((state) => state.rootReducer.loading);
+  const loadingBarRef = useRef(null);
+  const location = useLocation();
+
+  React.useEffect(() => {
+    const handleRouteChangeStart = () => {
+      dispatch(showLoading());
+      if (loadingBarRef.current) {
+        loadingBarRef.current.continuousStart();
+      }
+      dispatch(hideLoading());
+    };
+
+    const handleRouteChangeComplete = () => {
+      dispatch(hideLoading());
+      if (loadingBarRef.current) {
+        loadingBarRef.current.complete();
+      }
+    };
+
+    handleRouteChangeStart();
+
+    return () => {
+      handleRouteChangeComplete();
+    };
+  }, [location, dispatch]);
+
+  return (
+    <>
+      <LoadingBar color="#f11946" ref={loadingBarRef} />
+      {loading && <Loader />}
+      <Routes>
+        <Route
+          path="/"
+          element={
+            <ProtectedRoutes>
+              <Suspense fallback={<Loader />}>
+                <HomePage />
+              </Suspense>
+            </ProtectedRoutes>
+          }
+        />
+        <Route
+          path="/bills"
+          element={
+            <ProtectedRoutes>
+              <Suspense fallback={<Loader />}>
+                <BillsPage />
+              </Suspense>
+            </ProtectedRoutes>
+          }
+        />
+        <Route
+          path="/customers"
+          element={
+            <ProtectedRoutes>
+              <Suspense fallback={<Loader />}>
+                <CustomerPage />
+              </Suspense>
+            </ProtectedRoutes>
+          }
+        />
+        <Route
+          path="/orders"
+          element={
+            <ProtectedRoutes>
+              <Suspense fallback={<Loader />}>
+                <OrdersPage />
+              </Suspense>
+            </ProtectedRoutes>
+          }
+        />
+        <Route
+          path="/charts"
+          element={
+            <ProtectedRoutes>
+              <Suspense fallback={<Loader />}>
+                <ChartsPage />
+              </Suspense>
+            </ProtectedRoutes>
+          }
+        />
+        <Route
+          path="/whatsapp"
+          element={
+            <ProtectedRoutes>
+              <Suspense fallback={<Loader />}>
+                <WhatsAppSender />
+              </Suspense>
+            </ProtectedRoutes>
+          }
+        />
+        <Route
+          path="/employees"
+          element={
+            <ProtectedRoutes>
+              <Suspense fallback={<Loader />}>
+                <EmployeesPage />
+              </Suspense>
+            </ProtectedRoutes>
+          }
+        />
+        <Route
+          path="/inventory"
+          element={
+            <ProtectedRoutes>
+              <Suspense fallback={<Loader />}>
+                <InventoryPage />
+              </Suspense>
+            </ProtectedRoutes>
+          }
+        />
+        <Route
+          path="/login"
+          element={
+            <Suspense fallback={<Loader />}>
+              <Login />
+            </Suspense>
+          }
+        />
+        <Route
+          path="/register"
+          element={
+            <Suspense fallback={<Loader />}>
+              <Register />
+            </Suspense>
+          }
+        />
+        <Route
+          path="/password-reset"
+          element={
+            <Suspense fallback={<Loader />}>
+              <PasswordReset />
+            </Suspense>
+          }
+        />
+      </Routes>
     </>
   );
 }
 
 export default App;
 
+// eslint-disable-next-line react/prop-types
 export const ProtectedRoutes = ({ children }) => {
-  if (localStorage.getItem("auth")) {
+  const isAuthenticated = Boolean(localStorage.getItem("auth"));
+
+  if (isAuthenticated) {
     return children;
   } else {
-    return <Navigate to={"/login"} />;
+    return <Navigate to="/login" />;
   }
 };

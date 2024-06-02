@@ -9,15 +9,16 @@ import {
   message,
 } from "antd";
 import axios from "axios";
-import { IoIosSave } from "react-icons/io";
-import { useDispatch } from "react-redux";
+import { FaSave } from "react-icons/fa";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import DefaultLayout from "../../components/DefaultLayout/DefaultLayout.jsx";
 import "./HomePage.css";
-import { FaRegSave, FaSave } from "react-icons/fa";
 
 const { Option } = Select;
 const HomePage = () => {
+  const { loading } = useSelector((state) => state.rootReducer);
+
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -62,10 +63,10 @@ const HomePage = () => {
         className="home-form"
       >
         <div className="w-100">
-          <h1 className="header-title"> Order Registration</h1>
+          <h1 className="header-title">Order Registration</h1>
         </div>
-        <Row>
-          <Col span={24} lg={8} md={8} sm={24} className="me-2">
+        <Row gutter={[16, 16]}>
+          <Col span={24} lg={12} md={12} sm={24}>
             <Form.Item
               label="Order On"
               name="orderOn"
@@ -79,7 +80,7 @@ const HomePage = () => {
               <DatePicker format="YYYY-MM-DD" className="w-100" />
             </Form.Item>
           </Col>
-          <Col span={24} lg={12} md={8} sm={24} className="me-2">
+          <Col span={24} lg={12} md={12} sm={24}>
             <Form.Item
               label="Customer Name"
               name="customerName"
@@ -90,12 +91,12 @@ const HomePage = () => {
                 },
               ]}
             >
-              <Input type="text" placeholder="customer name" />
+              <Input type="text" placeholder="Customer Name" />
             </Form.Item>
           </Col>
         </Row>
-        <Row>
-          <Col span={24} lg={8} md={8} sm={24} className="me-2">
+        <Row gutter={[16, 16]}>
+          <Col span={24} lg={12} md={12} sm={24}>
             <Form.Item
               label="Customer Phone No"
               name="customerPhoneNo"
@@ -106,10 +107,10 @@ const HomePage = () => {
                 },
               ]}
             >
-              <Input type="number" placeholder="customer Mobile Number" />
+              <Input type="number" placeholder="Customer Mobile Number" />
             </Form.Item>
           </Col>
-          <Col span={24} lg={12} md={8} sm={24} className="me-2">
+          <Col span={24} lg={12} md={12} sm={24}>
             <Form.Item
               label="Phone Model"
               name="phoneModel"
@@ -124,8 +125,8 @@ const HomePage = () => {
             </Form.Item>
           </Col>
         </Row>
-        <Row>
-          <Col span={24} lg={20} md={8} sm={24} className="">
+        <Row gutter={[16, 16]}>
+          <Col span={24} lg={24} md={24} sm={24}>
             <Form.Item
               label="Mobile Issues"
               name="mobileIssues"
@@ -141,49 +142,33 @@ const HomePage = () => {
                 mode="multiple"
                 placeholder="Please select issues"
               >
-                <Select.Option value="Screen Damage">
-                  Screen Damage
-                </Select.Option>
-                <Select.Option value="Water Damage">Water Damage</Select.Option>
-                <Select.Option value="Charging Issue">
-                  Charging Issue
-                </Select.Option>
-                <Select.Option value="Dead">Dead</Select.Option>
-                <Select.Option value="Software Issue">
-                  Software Issue
-                </Select.Option>
-                <Select.Option value="Mic Issue">Mic Issue</Select.Option>
-                <Select.Option value="Receiver Issue">
-                  Receiver Issue
-                </Select.Option>
-                <Select.Option value="Sensor Issue">Sensor Issue</Select.Option>
-                <Select.Option value="Ringer (Speaker)">
-                  Ringer (Speaker)
-                </Select.Option>
-                <Select.Option value="Broken touch or glass">
+                <Option value="Screen Damage">Screen Damage</Option>
+                <Option value="Water Damage">Water Damage</Option>
+                <Option value="Charging Issue">Charging Issue</Option>
+                <Option value="Dead">Dead</Option>
+                <Option value="Software Issue">Software Issue</Option>
+                <Option value="Mic Issue">Mic Issue</Option>
+                <Option value="Receiver Issue">Receiver Issue</Option>
+                <Option value="Sensor Issue">Sensor Issue</Option>
+                <Option value="Ringer (Speaker)">Ringer (Speaker)</Option>
+                <Option value="Broken touch or glass">
                   Broken touch or glass
-                </Select.Option>
-                <Select.Option value="Battery issue">
-                  Battery issue
-                </Select.Option>
-                <Select.Option value="back door">back door</Select.Option>
-                <Select.Option value="power button">power button</Select.Option>
-                <Select.Option value="volume buttons">
-                  volume buttons
-                </Select.Option>
-                <Select.Option value="camera issue">camera issue</Select.Option>
-                <Select.Option value="refitting">refitting</Select.Option>
-                <Select.Option value="frame">frame</Select.Option>
-                <Select.Option value="Network issue">
-                  Network issue
-                </Select.Option>
-                <Select.Option value="Other">Other</Select.Option>
+                </Option>
+                <Option value="Battery issue">Battery issue</Option>
+                <Option value="back door">back door</Option>
+                <Option value="power button">power button</Option>
+                <Option value="volume buttons">volume buttons</Option>
+                <Option value="camera issue">camera issue</Option>
+                <Option value="refitting">refitting</Option>
+                <Option value="frame">frame</Option>
+                <Option value="Network issue">Network issue</Option>
+                <Option value="Other">Other</Option>
               </Select>
             </Form.Item>
           </Col>
         </Row>
-        <Row>
-          <Col span={24} lg={20} md={8} sm={24} className="me-2">
+        <Row gutter={[16, 16]}>
+          <Col span={24} lg={24} md={24} sm={24}>
             <Form.Item
               label="Sim & Memory Card"
               name="simCardAndMemoryCard"
@@ -211,14 +196,13 @@ const HomePage = () => {
             </Form.Item>
           </Col>
         </Row>
-        <Row>
-          <Col span={24} lg={10} md={8} sm={24} className="me-2">
+        <Row gutter={[16, 16]}>
+          <Col span={24} lg={12} md={12} sm={24}>
             <Form.Item label="Phone Password" name="phonePassword">
-              <Input type="number" placeholder="phone password" />
+              <Input type="number" placeholder="Phone Password" />
             </Form.Item>
           </Col>
-
-          <Col span={24} lg={10} md={8} sm={24} className="me-2">
+          <Col span={24} lg={12} md={12} sm={24}>
             <Form.Item
               label="Box No"
               name="boxNo"
@@ -229,12 +213,12 @@ const HomePage = () => {
                 },
               ]}
             >
-              <Input type="text" placeholder="Enter box number" />
+              <Input type="text" placeholder="Box Number" />
             </Form.Item>
           </Col>
         </Row>
-        <Row>
-          <Col span={24} lg={10} md={8} sm={24} className="me-2">
+        <Row gutter={[16, 16]}>
+          <Col span={24} lg={12} md={12} sm={24}>
             <Form.Item
               label="Received By"
               name="receivedBy"
@@ -245,15 +229,14 @@ const HomePage = () => {
                 },
               ]}
             >
-              <Select placeholder="select received by">
+              <Select placeholder="Select received by">
                 <Option value="Aman Singh">Aman Singh</Option>
                 <Option value="Santosh Singh">Santosh Singh</Option>
                 <Option value="Shubham">Shubham</Option>
               </Select>
             </Form.Item>
           </Col>
-
-          <Col span={24} lg={10} md={8} sm={24} className="me-2">
+          <Col span={24} lg={12} md={12} sm={24}>
             <Form.Item
               label="EMP Order Status"
               name="empOrderStatus"
@@ -264,7 +247,7 @@ const HomePage = () => {
                 },
               ]}
             >
-              <Select placeholder="select order status">
+              <Select placeholder="Select order status">
                 <Option value="Completed">Completed</Option>
                 <Option value="Pending">Pending</Option>
                 <Option value="Not possible">Not possible</Option>
@@ -272,8 +255,8 @@ const HomePage = () => {
             </Form.Item>
           </Col>
         </Row>
-        <Row>
-          <Col span={24} lg={20} md={8} sm={24} className="me-2">
+        <Row gutter={[16, 16]}>
+          <Col span={24} lg={24} md={24} sm={24}>
             <Form.Item
               label="Total Amount"
               name="totalAmount"
@@ -284,12 +267,12 @@ const HomePage = () => {
                 },
               ]}
             >
-              <Input type="number" placeholder="enter total amount" />
+              <Input type="number" placeholder="Enter total amount" />
             </Form.Item>
           </Col>
         </Row>
-        <Row>
-          <Col span={24} lg={10} md={8} sm={24} className="me-2">
+        <Row gutter={[16, 16]}>
+          <Col span={24} lg={12} md={12} sm={24}>
             <Form.Item
               label="Advance Amount"
               name="advanceAmount"
@@ -300,11 +283,10 @@ const HomePage = () => {
                 },
               ]}
             >
-              <Input type="text" placeholder="enter advance ammount" />
+              <Input type="number" placeholder="Enter advance amount" />
             </Form.Item>
           </Col>
-
-          <Col span={24} lg={10} md={8} sm={24} className="me-2">
+          <Col span={24} lg={12} md={12} sm={24}>
             <Form.Item
               label="Due Amount"
               name="dueAmount"
@@ -315,12 +297,12 @@ const HomePage = () => {
                 },
               ]}
             >
-              <Input type="text" placeholder="enter due amount" />
+              <Input type="number" placeholder="Enter due amount" />
             </Form.Item>
           </Col>
         </Row>
-        <Row>
-          <Col span={24} lg={10} md={8} sm={24} className="me-2">
+        <Row gutter={[16, 16]}>
+          <Col span={24} lg={12} md={12} sm={24}>
             <Form.Item
               label="Select Branch"
               name="selectBranch"
@@ -331,35 +313,34 @@ const HomePage = () => {
                 },
               ]}
             >
-              <Select placeholder="select branch">
+              <Select placeholder="Select branch">
                 <Option value="BS">BS</Option>
                 <Option value="DS">DS</Option>
               </Select>
             </Form.Item>
           </Col>
-
-          <Col span={24} lg={10} md={8} sm={24} className="me-2">
+          <Col span={24} lg={12} md={12} sm={24}>
             <Form.Item label="Customer Response" name="customerResponse">
-              <Select placeholder="select customer response">
+              <Select placeholder="Select customer response">
                 <Option value="Delivered">Delivered</Option>
                 <Option value="No Response">No Response</Option>
               </Select>
             </Form.Item>
           </Col>
         </Row>
-        <Row>
-          <Col span={24} lg={10} md={8} sm={24} className="me-2">
+        <Row gutter={[16, 16]}>
+          <Col span={24} lg={12} md={12} sm={24}>
             <Form.Item label="Order Completed On" name="orderCompletedOn">
               <DatePicker
-                className="w-100 "
-                placeholder="completed on"
+                className="w-100"
+                placeholder="Completed on"
                 format="DD-MM-YYYY"
               />
             </Form.Item>
           </Col>
-          <Col span={24} lg={10} md={8} sm={24} className="me-2">
+          <Col span={24} lg={12} md={12} sm={24}>
             <Form.Item label="Delivered By" name="deliveredBy">
-              <Select type="text" placeholder="select delivered by">
+              <Select placeholder="Select delivered by">
                 <Option value="Aman Singh">Aman Singh</Option>
                 <Option value="Santosh Singh">Santosh Singh</Option>
                 <Option value="Shubham">Shubham</Option>
@@ -368,18 +349,19 @@ const HomePage = () => {
           </Col>
         </Row>
         <Row>
-          <Col span={24} lg={16} md={8} sm={24} className="me-2">
-            <div className="d-flex justify-content-center align-items-center ">
-              <Button
-                type="primary"
-                htmlType="submit"
-                size="middle"
-                className="w-50 "
-                icon={<FaSave />}
-              >
-                Save
-              </Button>
-            </div>
+          <Col
+            span={24}
+            className="d-flex justify-content-center align-items-center"
+          >
+            <Button
+              type="primary"
+              htmlType="submit"
+              size="middle"
+              className="w-50"
+              icon={<FaSave />}
+            >
+              Save
+            </Button>
           </Col>
         </Row>
       </Form>
