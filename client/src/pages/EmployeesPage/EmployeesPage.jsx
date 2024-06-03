@@ -48,7 +48,7 @@ const EmployeesPage = () => {
 
       setLoading(false); // Set loading to false after data is fetched
 
-      const employeesWithKeys = data.employees.map((employee, index) => ({
+      const employeesWithKeys = data.employees?.map((employee, index) => ({
         ...employee,
         key: employee._id, // Ensure each row has a unique key
       }));

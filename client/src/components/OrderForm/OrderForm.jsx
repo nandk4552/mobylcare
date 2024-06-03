@@ -2,11 +2,12 @@ import { Button, DatePicker, Form, Input, Select } from "antd";
 import dayjs from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
 import moment from "moment";
+import { useEffect, useState } from "react";
 dayjs.extend(customParseFormat);
 
 const { Option } = Select;
 
-const OrderForm = ({ initialValues, onFinish }) => {
+const OrderForm = ({ initialValues, onFinish, employees }) => {
   const formattedInitialValues = {
     ...initialValues,
     orderOn: initialValues?.orderOn ? moment(initialValues.orderOn) : null,
@@ -14,6 +15,7 @@ const OrderForm = ({ initialValues, onFinish }) => {
       ? moment(initialValues?.orderCompletedOn)
       : null,
   };
+
   return (
     <Form
       size="small"
@@ -160,10 +162,12 @@ const OrderForm = ({ initialValues, onFinish }) => {
           },
         ]}
       >
-        <Select>
-          <Option value="Aman Singh">Aman Singh</Option>
-          <Option value="Santosh Singh">Santosh Singh</Option>
-          <Option value="Shubham">Shubham</Option>
+        <Select placeholder="Select received by">
+          {employees?.map((employee) => (
+            <Option key={employee?._id} value={employee?.name}>
+              {employee?.name}
+            </Option>
+          ))}
         </Select>
       </Form.Item>
       <Form.Item
@@ -258,10 +262,12 @@ const OrderForm = ({ initialValues, onFinish }) => {
           },
         ]}
       >
-        <Select>
-          <Option value="Aman Singh">Aman Singh</Option>
-          <Option value="Santosh Singh">Santosh Singh</Option>
-          <Option value="Shubham">Shubham</Option>
+        <Select placeholder="Select delivered by">
+          {employees?.map((employee) => (
+            <Option key={employee?._id} value={employee?.name}>
+              {employee?.name}
+            </Option>
+          ))}
         </Select>
       </Form.Item>
       <Form.Item label="Order Completed On" name="orderCompletedOn">

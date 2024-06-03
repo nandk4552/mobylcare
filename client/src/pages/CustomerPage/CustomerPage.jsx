@@ -5,7 +5,7 @@ import { useEffect, useRef, useState } from "react";
 import Highlighter from "react-highlight-words"; // Import Highlighter component
 import { FaUserEdit, FaUserPlus } from "react-icons/fa";
 import { IoIosArrowDropdown, IoIosArrowDropup } from "react-icons/io";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import CustomersForm from "../../components/CustomerForm/CustomerForm";
 import DefaultLayout from "../../components/DefaultLayout/DefaultLayout";
 import "./CustomerPage.css";
@@ -14,9 +14,10 @@ const confirm = Modal.confirm;
 const { Column } = Table;
 
 const CustomerPage = () => {
+  const loading = useSelector((state) => state.rootReducer.loading);
+
   const [customersData, setCustomersData] = useState([]);
   const [searchText, setSearchText] = useState("");
-  const [loading, setLoading] = useState(false); // State to track loading state
   const [popupModal, setPopupModal] = useState(false); // State for controlling the popup modal
   const dispatch = useDispatch();
   const searchInput = useRef(null);
@@ -32,8 +33,6 @@ const CustomerPage = () => {
 
   const getAllCustomers = async () => {
     try {
-      setLoading(true); // Set loading to true when fetching data
-
       const { data } = await axios.get(
         `${import.meta.env.VITE_SERVER}/api/v1/customer/get-all`,
         {
@@ -43,11 +42,8 @@ const CustomerPage = () => {
         }
       );
 
-      setLoading(false); // Set loading to false after data is fetched
-
       setCustomersData(data.customers);
     } catch (error) {
-      setLoading(false); // Set loading to false if there's an error
       console.error("Error fetching customers:", error);
     }
   };
@@ -327,9 +323,9 @@ const CustomerPage = () => {
           </FloatButton.Group>
         </div>
       </div>
-      <Table dataSource={customersData} bordered>
-        {columns.map((column) => (
-          <Column {...column} key={column.key} />
+      <Table loading={loading} dataSource={customersData} bordered>
+        {columns?.map((column, index) => (
+          <Column {...column} key={index} />
         ))}
       </Table>
 

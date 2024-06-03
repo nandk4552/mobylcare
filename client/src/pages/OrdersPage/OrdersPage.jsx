@@ -14,7 +14,7 @@ import moment from "moment";
 import React, { useEffect, useRef, useState } from "react";
 import Highlighter from "react-highlight-words"; // Import Highlighter component
 import { MdAssignmentAdd } from "react-icons/md";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import DefaultLayout from "../../components/DefaultLayout/DefaultLayout";
 
 import { FaEdit } from "react-icons/fa";
@@ -24,6 +24,8 @@ const confirm = Modal.confirm;
 const { Column } = Table;
 
 const OrdersPage = () => {
+  const loading = useSelector((state) => state.rootReducer.loading);
+
   const dispatch = useDispatch();
   const [ordersData, setOrdersData] = useState([]);
   const [popupModal, setPopupModal] = useState(false);
@@ -37,6 +39,17 @@ const OrdersPage = () => {
   // const [dateRange, setDateRange] = useState([null, null]);
 
   const searchInput = useRef(null);
+  const [employees, setEmployees] = useState([]);
+  const fetchEmployees = async () => {
+    try {
+      const { data } = await axios.get(
+        `${import.meta.env.VITE_SERVER}/api/v1/employees/list/names`
+      );
+      setEmployees(data?.employees);
+    } catch (error) {
+      message.error("Failed to fetch employees");
+    }
+  };
 
   // Fetch order statuses for filter
   const getOrderStatuses = async () => {
@@ -187,6 +200,7 @@ const OrdersPage = () => {
     filterOrderReceivedByBranch();
     filterOrderDeliveredByBranch();
     filterOrderCustomerResponse();
+    fetchEmployees();
   }, []);
   const handleSearch = (selectedKeys, confirm) => {
     confirm();
@@ -565,7 +579,7 @@ const OrdersPage = () => {
     });
   };
   const [rotating, setRotating] = useState(false);
-
+  console.log(ordersData);
   return (
     <DefaultLayout>
       <div className="d-flex justify-content-between align-items-center">
@@ -590,6 +604,7 @@ const OrdersPage = () => {
         columns={columns}
         rowKey="_id"
         bordered
+        loading={loading}
       />
 
       {/* pop modal */}
@@ -603,7 +618,11 @@ const OrdersPage = () => {
           }}
           footer={null}
         >
-          <OrderForm initialValues={editOrder} onFinish={handleSubmit} />
+          <OrderForm
+            employees={employees}
+            initialValues={editOrder}
+            onFinish={handleSubmit}
+          />
         </Modal>
       )}
     </DefaultLayout>

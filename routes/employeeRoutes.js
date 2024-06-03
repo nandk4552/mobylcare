@@ -6,6 +6,7 @@ const {
   getEmployeeById,
   updateEmployee,
   deleteEmployee,
+  getEmployeesListController,
 } = require("../controllers/employeeController");
 
 // Create a new employee
@@ -22,5 +23,9 @@ router.put("/:id", updateEmployee);
 
 // Delete an employee by ID
 router.delete("/:id", deleteEmployee);
+//get only employee names || get || /api/v1/employees/list/names
+router.get("/list/names", getEmployeesListController);
+
+module.exports = router;
 
 module.exports = router;

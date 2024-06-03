@@ -14,10 +14,12 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import DefaultLayout from "../../components/DefaultLayout/DefaultLayout.jsx";
 import "./HomePage.css";
+import { useEffect, useState } from "react";
 
 const { Option } = Select;
 const HomePage = () => {
   const { loading } = useSelector((state) => state.rootReducer);
+  const [employees, setEmployees] = useState([]);
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -52,7 +54,20 @@ const HomePage = () => {
       console.log(error);
     }
   };
+  const fetchEmployees = async () => {
+    try {
+      const { data } = await axios.get(
+        `${import.meta.env.VITE_SERVER}/api/v1/employees/list/names`
+      );
+      setEmployees(data?.employees);
+    } catch (error) {
+      message.error("Failed to fetch employees");
+    }
+  };
 
+  useEffect(() => {
+    fetchEmployees();
+  }, []);
   return (
     <DefaultLayout>
       <Form
@@ -230,9 +245,11 @@ const HomePage = () => {
               ]}
             >
               <Select placeholder="Select received by">
-                <Option value="Aman Singh">Aman Singh</Option>
-                <Option value="Santosh Singh">Santosh Singh</Option>
-                <Option value="Shubham">Shubham</Option>
+                {employees?.map((employee) => (
+                  <Option key={employee?._id} value={employee?.name}>
+                    {employee?.name}
+                  </Option>
+                ))}
               </Select>
             </Form.Item>
           </Col>
@@ -340,10 +357,13 @@ const HomePage = () => {
           </Col>
           <Col span={24} lg={12} md={12} sm={24}>
             <Form.Item label="Delivered By" name="deliveredBy">
+
               <Select placeholder="Select delivered by">
-                <Option value="Aman Singh">Aman Singh</Option>
-                <Option value="Santosh Singh">Santosh Singh</Option>
-                <Option value="Shubham">Shubham</Option>
+                {employees?.map((employee) => (
+                  <Option key={employee?._id} value={employee?.name}>
+                    {employee?.name}
+                  </Option>
+                ))}
               </Select>
             </Form.Item>
           </Col>

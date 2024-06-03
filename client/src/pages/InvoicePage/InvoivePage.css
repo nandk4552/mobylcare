@@ -1,0 +1,102 @@
+.invoice #invoice-POS {
+  box-shadow: 0 0 1in -0.25in rgba(0, 0, 0, 0.5);
+  padding: 4mm;
+  margin: 0 auto;
+  width: 76mm;
+  background: #fff;
+}
+
+.invoice::selection {
+  background: #f31544;
+  color: #fff;
+}
+.invoice::moz-selection {
+  background: #f31544;
+  color: #fff;
+}
+.invoice h1 {
+  font-size: 1.5em;
+  color: #222;
+}
+.invoice h2 {
+  font-size: 0.9em;
+}
+.invoice h3 {
+  font-size: 1.2em;
+  font-weight: 300;
+  line-height: 2em;
+}
+.invoice p {
+  font-size: 0.7em;
+  color: #666;
+  line-height: 1.2em;
+}
+
+.invoice #top,
+.invoice #mid,
+.invoice #bot {
+  /* Targets all id with 'col-' */
+  border-bottom: 1px solid #eee;
+}
+
+.invoice #top {
+  min-height: 100px;
+}
+
+.invoice #bot {
+  min-height: 50px;
+}
+
+.invoice #top .logo {
+  height: 60px;
+  width: 60px;
+  border-radius: 20%;
+  background: url(https://lh4.googleusercontent.com/4JrkXKqRv91642btrfJ9agN1ne2iWozP8Q9FjZXicnT2PRN8CYpe8ax5J8LuVLZanllT4OKn4Fqvxepey0TE9Y385hWK6DVx7uveWHJ1RIs-k5Ovwifw-_zYRp9SQqodow=w556)
+    no-repeat;
+  background-size: 50px 50px;
+}
+.invoice .clientlogo {
+  float: left;
+  height: 60px;
+  width: 60px;
+  background: url(http://michaeltruong.ca/images/client.jpg) no-repeat;
+  background-size: 60px 60px;
+  border-radius: 50px;
+}
+.invoice .info {
+  display: block;
+  /* //float:left; */
+  margin-left: 0;
+}
+.invoice .title {
+  float: right;
+}
+.invoice .title p {
+  text-align: right;
+}
+.invoice table {
+  width: 100%;
+  border-collapse: collapse;
+}
+.invoice td {
+  padding: 5px 0 5px 15px;
+  border: 1px solid #eee;
+}
+.invoice .tabletitle {
+  padding: 5px;
+  font-size: 0.6rem;
+  background: #eee;
+}
+.invoice .service {
+  border-bottom: 1px solid #eee;
+}
+.invoice .item {
+  width: 24mm;
+}
+.invoice .itemtext {
+  font-size: 0.5em;
+}
+
+.invoice #legalcopy {
+  margin-top: 5mm;
+}

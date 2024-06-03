@@ -3,8 +3,9 @@ import { Form, Input, InputNumber, Button, Upload, message, Modal } from "antd";
 import { UploadOutlined } from "@ant-design/icons";
 import InventoryService from "./InventoryService";
 
-const InventoryForm = ({ visible, onClose, onRefresh, item }) => {
-  const [form] = Form.useForm();
+const { useForm } = Form;
+const InventoryForm = ({ open, onClose, onRefresh, item }) => {
+  const [form] = useForm();
   const [fileList, setFileList] = useState([]);
 
   useEffect(() => {
@@ -61,7 +62,7 @@ const InventoryForm = ({ visible, onClose, onRefresh, item }) => {
   return (
     <Modal
       title={item ? "Edit Inventory Item" : "Add Inventory Item"}
-      open={visible}
+      open={open}
       onCancel={onClose}
       footer={null}
     >

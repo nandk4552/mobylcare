@@ -35,6 +35,8 @@ app.use("/api/v1/customer", require("./routes/customerRoutes"));
 app.use("/api/v1/employees", require("./routes/employeeRoutes"));
 //inventory routes
 app.use("/api/v1/inventory", require("./routes/inventoryRoutes"));
+//invoice routes
+app.use("/api/v1/invoice", require("./routes/invoiceRoutes"));
 
 // Catch all other routes
 app.use((req, res, next) => {

@@ -185,7 +185,6 @@ const InventoryList = () => {
               color: "red",
               fontSize: "1.5rem",
             }}
-            danger
             onClick={() => deleteItem(record._id)}
           />
         </span>
@@ -253,8 +252,9 @@ const InventoryList = () => {
         loading={loading}
         bordered
       />
+
       <InventoryForm
-        visible={isModalVisible}
+        open={isModalVisible}
         onClose={handleModalClose}
         onRefresh={fetchInventoryItems}
         item={editingItem}

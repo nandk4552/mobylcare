@@ -9,7 +9,7 @@ import {
 } from "react-router-dom";
 import { hideLoading, showLoading } from "./redux/rootReducer";
 import LoadingBar from "react-top-loading-bar";
-import Spinner from "./components/Spinner/Spinner";
+import LayoutLoader from "./components/DefaultLayout/LayoutLoader";
 
 const PasswordReset = lazy(() =>
   import("./components/PasswordReset/PasswordReset")
@@ -17,7 +17,7 @@ const PasswordReset = lazy(() =>
 const WhatsAppSender = lazy(() =>
   import("./components/WhatsAppSender/WhatsAppSender")
 );
-const BillsPage = lazy(() => import("./pages/BillsPage/BillsPage"));
+const InvoicePage = lazy(() => import("./pages/InvoicePage/InvoicePage"));
 const ChartsPage = lazy(() => import("./pages/ChartsPage/ChartsPage"));
 const CustomerPage = lazy(() => import("./pages/CustomerPage/CustomerPage"));
 const EmployeesPage = lazy(() => import("./pages/EmployeesPage/EmployeesPage"));
@@ -27,7 +27,7 @@ const Login = lazy(() => import("./pages/Login/Login"));
 const OrdersPage = lazy(() => import("./pages/OrdersPage/OrdersPage"));
 const Register = lazy(() => import("./pages/Register/Register"));
 
-const Loader = () => <Spinner />;
+const Loader = () => <LayoutLoader />;
 
 function App() {
   return (
@@ -82,11 +82,11 @@ function Main() {
           }
         />
         <Route
-          path="/bills"
+          path="/invoice"
           element={
             <ProtectedRoutes>
               <Suspense fallback={<Loader />}>
-                <BillsPage />
+                <InvoicePage />
               </Suspense>
             </ProtectedRoutes>
           }

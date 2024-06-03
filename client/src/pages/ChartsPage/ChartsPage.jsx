@@ -257,7 +257,7 @@ const ChartsPage = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {recentOrders.map((order, index) => (
+                  {recentOrders?.map((order, index) => (
                     <tr key={index + 1}>
                       <th scope="row">{order._id}</th>
                       <td>{order.customerName}</td>

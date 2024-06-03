@@ -1,3 +1,4 @@
+const invoiceModel = require("../models/invoiceModel");
 const orderModel = require("../models/orderModel");
 
 // create a new order
@@ -90,7 +91,7 @@ const createOrderController = async (req, res) => {
 // get all orders controllers
 const getAllOrdersController = async (req, res) => {
   try {
-    const orders = await orderModel.find({});
+    const orders = await orderModel.find({}).sort({ createdAt: -1 });
     if (!orders) {
       return res.status(404).send({
         success: false,
@@ -150,6 +151,111 @@ const getOrderByIDController = async (req, res) => {
 };
 
 // update an order by id from db
+// const updateOrderByIDController = async (req, res) => {
+//   try {
+//     // get id from params
+//     const { id } = req.params;
+//     if (!id) {
+//       return res.status(404).send({
+//         success: false,
+//         message: "id not found",
+//       });
+//     }
+
+//     const exists = await orderModel.findById(id);
+//     if (!exists)
+//       return res.status(404).send({
+//         success: false,
+//         message: "Order not found",
+//       });
+//     // get data from request body
+//     const {
+//       orderOn,
+//       customerName,
+//       customerPhoneNo,
+//       phoneModel,
+//       mobileIssues,
+//       simCardAndMemoryCard,
+//       phonePassword,
+//       boxNo,
+//       receivedBy,
+//       empOrderStatus,
+//       totalAmount,
+//       advanceAmount,
+//       dueAmount,
+//       selectBranch,
+//       customerResponse,
+//       deliveredBy,
+//       orderCompletedOn,
+//     } = req.body;
+//     // validate the required fields
+//     if (
+//       !orderOn ||
+//       !customerName ||
+//       !customerPhoneNo ||
+//       !phoneModel ||
+//       !mobileIssues ||
+//       !simCardAndMemoryCard ||
+//       !boxNo ||
+//       !receivedBy ||
+//       !empOrderStatus ||
+//       !totalAmount ||
+//       !advanceAmount ||
+//       !selectBranch
+//     ) {
+//       return res.status(404).send({
+//         success: false,
+//         message: "All fields are required",
+//       });
+//     }
+
+//     const order = await orderModel.findByIdAndUpdate(
+//       id,
+//       {
+//         orderOn,
+//         customerName,
+//         customerPhoneNo,
+//         phoneModel,
+//         mobileIssues,
+//         simCardAndMemoryCard,
+//         phonePassword,
+//         boxNo,
+//         receivedBy,
+//         empOrderStatus,
+//         totalAmount,
+//         advanceAmount,
+//         dueAmount,
+//         selectBranch,
+//         customerResponse,
+//         deliveredBy,
+//         orderCompletedOn,
+//       },
+//       {
+//         new: true,
+//       }
+//     );
+
+//     if (!order)
+//       return res.status(404).send({
+//         success: true,
+//         message: "Order not updated successfully",
+//       });
+
+//     return res.status(200).send({
+//       success: true,
+//       message: "Order updated successfully",
+//       order,
+//     });
+//   } catch (error) {
+//     console.log(error);
+//     res.status(500).send({
+//       success: false,
+//       message: "Error in update order by ID API",
+//       error,
+//     });
+//   }
+// };
+
 const updateOrderByIDController = async (req, res) => {
   try {
     // get id from params
@@ -162,11 +268,13 @@ const updateOrderByIDController = async (req, res) => {
     }
 
     const exists = await orderModel.findById(id);
-    if (!exists)
+    if (!exists) {
       return res.status(404).send({
         success: false,
         message: "Order not found",
       });
+    }
+
     // get data from request body
     const {
       orderOn,
@@ -187,62 +295,64 @@ const updateOrderByIDController = async (req, res) => {
       deliveredBy,
       orderCompletedOn,
     } = req.body;
-    // validate the required fields
-    if (
-      !orderOn ||
-      !customerName ||
-      !customerPhoneNo ||
-      !phoneModel ||
-      !mobileIssues ||
-      !simCardAndMemoryCard ||
-      !boxNo ||
-      !receivedBy ||
-      !empOrderStatus ||
-      !totalAmount ||
-      !advanceAmount ||
-      !selectBranch
-    ) {
+
+    // Create an object with the fields to update
+    const updateFields = {};
+    if (orderOn !== undefined) updateFields.orderOn = orderOn;
+    if (customerName !== undefined) updateFields.customerName = customerName;
+    if (customerPhoneNo !== undefined)
+      updateFields.customerPhoneNo = customerPhoneNo;
+    if (phoneModel !== undefined) updateFields.phoneModel = phoneModel;
+    if (mobileIssues !== undefined) updateFields.mobileIssues = mobileIssues;
+    if (simCardAndMemoryCard !== undefined)
+      updateFields.simCardAndMemoryCard = simCardAndMemoryCard;
+    if (phonePassword !== undefined) updateFields.phonePassword = phonePassword;
+    if (boxNo !== undefined) updateFields.boxNo = boxNo;
+    if (receivedBy !== undefined) updateFields.receivedBy = receivedBy;
+    if (empOrderStatus !== undefined)
+      updateFields.empOrderStatus = empOrderStatus;
+    if (totalAmount !== undefined) updateFields.totalAmount = totalAmount;
+    if (advanceAmount !== undefined) updateFields.advanceAmount = advanceAmount;
+    if (dueAmount !== undefined) updateFields.dueAmount = dueAmount;
+    if (selectBranch !== undefined) updateFields.selectBranch = selectBranch;
+    if (customerResponse !== undefined)
+      updateFields.customerResponse = customerResponse;
+    if (deliveredBy !== undefined) updateFields.deliveredBy = deliveredBy;
+    if (orderCompletedOn !== undefined)
+      updateFields.orderCompletedOn = orderCompletedOn;
+
+    const updatedOrder = await orderModel.findByIdAndUpdate(id, updateFields, {
+      new: true,
+    });
+
+    if (!updatedOrder) {
       return res.status(404).send({
         success: false,
-        message: "All fields are required",
+        message: "Order not updated successfully",
       });
     }
 
-    const order = await orderModel.findByIdAndUpdate(
-      id,
-      {
-        customerName,
-        customerPhoneNo,
-        phoneModel,
-        mobileIssues,
-        simCardAndMemoryCard,
-        phonePassword,
-        boxNo,
-        receivedBy,
-        empOrderStatus,
-        totalAmount,
-        advanceAmount,
-        dueAmount,
-        selectBranch,
-        customerResponse,
-        deliveredBy,
-        orderCompletedOn,
-      },
-      {
-        new: true,
-      }
-    );
-
-    if (!order)
-      return res.status(404).send({
-        success: true,
-        message: "Order not updated successfully",
+    // Check if the status is updated to "Completed" and create an invoice if true
+    if (empOrderStatus === "Completed") {
+      const invoice = new invoiceModel({
+        customerName: updatedOrder.customerName,
+        customerPhoneNo: updatedOrder.customerPhoneNo,
+        totalAmount: updatedOrder.totalAmount,
+        mobileIssues: updatedOrder.mobileIssues,
+        orderOn: updatedOrder.orderOn,
+        orderID: updatedOrder._id,
       });
+      await invoice.save();
+      console.log(
+        "Invoice created successfully for updated order:",
+        updatedOrder._id
+      );
+    }
 
     return res.status(200).send({
       success: true,
       message: "Order updated successfully",
-      order,
+      updatedOrder,
     });
   } catch (error) {
     console.log(error);
@@ -424,24 +534,40 @@ const filterOrderByCustomerResponseController = async (req, res) => {
   }
 };
 
+// const getDailyOrdersController = async (req, res) => {
+//   try {
+//     const orders = await orderModel.aggregate([
+//       {
+//         $addFields: {
+//           orderOnDate: {
+//             $dateFromString: {
+//               dateString: "$orderOn",
+//               format: "%m/%d/%Y",
+//               onError: null, // Handle conversion errors
+//               onNull: null, // Handle null values
+//             },
+//           },
+//         },
+//       },
+//       {
+//         $group: {
+//           _id: { $dateToString: { format: "%Y-%m-%d", date: "$orderOnDate" } },
+//           count: { $sum: 1 },
+//         },
+//       },
+//       { $sort: { _id: 1 } },
+//     ]);
+//     res.json(orders);
+//   } catch (err) {
+//     res.status(500).json({ error: err.message });
+//   }
+// };
 const getDailyOrdersController = async (req, res) => {
   try {
     const orders = await orderModel.aggregate([
       {
-        $addFields: {
-          orderOnDate: {
-            $dateFromString: {
-              dateString: "$orderOn",
-              format: "%m/%d/%Y",
-              onError: null, // Handle conversion errors
-              onNull: null, // Handle null values
-            },
-          },
-        },
-      },
-      {
         $group: {
-          _id: { $dateToString: { format: "%Y-%m-%d", date: "$orderOnDate" } },
+          _id: { $dateToString: { format: "%Y-%m-%d", date: "$orderOn" } },
           count: { $sum: 1 },
         },
       },
@@ -452,24 +578,41 @@ const getDailyOrdersController = async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 };
+
+// const getMonthlyOrdersController = async (req, res) => {
+//   try {
+//     const monthlyOrders = await orderModel.aggregate([
+//       {
+//         $project: {
+//           orderOn: {
+//             $dateFromString: {
+//               dateString: "$orderOn",
+//               format: "%m/%d/%Y", // Adjust the format to match "MM/DD/YYYY"
+//             },
+//           },
+//         },
+//       },
+//       {
+//         $match: {
+//           orderOn: { $ne: null }, // Exclude documents with null orderOn field
+//         },
+//       },
+//       {
+//         $group: {
+//           _id: { $dateToString: { format: "%Y-%m", date: "$orderOn" } },
+//           count: { $sum: 1 },
+//         },
+//       },
+//       { $sort: { _id: 1 } },
+//     ]);
+//     res.json(monthlyOrders);
+//   } catch (err) {
+//     res.status(500).json({ error: err.message });
+//   }
+// };
 const getMonthlyOrdersController = async (req, res) => {
   try {
     const monthlyOrders = await orderModel.aggregate([
-      {
-        $project: {
-          orderOn: {
-            $dateFromString: {
-              dateString: "$orderOn",
-              format: "%m/%d/%Y", // Adjust the format to match "MM/DD/YYYY"
-            },
-          },
-        },
-      },
-      {
-        $match: {
-          orderOn: { $ne: null }, // Exclude documents with null orderOn field
-        },
-      },
       {
         $group: {
           _id: { $dateToString: { format: "%Y-%m", date: "$orderOn" } },

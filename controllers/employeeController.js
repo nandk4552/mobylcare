@@ -129,11 +129,30 @@ const deleteEmployee = async (req, res) => {
     res.status(400).json({ message: "Error deleting employee", error });
   }
 };
-
+// get emp list from db
+const getEmployeesListController = async (req, res) => {
+  try {
+    const employees = await employeeModel.find({});
+    if (!employees) {
+      return res.status(404).send({
+        success: false,
+        message: "Employees not found",
+      });
+    }
+    res.status(200).send({
+      success: true,
+      message: "Employees fetched successfully",
+      employees,
+    });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
 module.exports = {
   createEmployee,
   getEmployees,
   getEmployeeById,
   updateEmployee,
   deleteEmployee,
+  getEmployeesListController,
 };

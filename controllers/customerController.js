@@ -14,7 +14,7 @@ const extractCustomerInfoController = async (req, res) => {
 
 const getAllCustomerController = async (req, res) => {
   try {
-    const customers = await customerModel.find();
+    const customers = await customerModel.find({}).sort({ createdAt: -1 });
     if (!customers) {
       return res.status(404).send({
         success: false,
@@ -170,7 +170,7 @@ const deleteCustomerController = async (req, res) => {
   } catch (error) {
     console.log(error);
     return res.status(500).send({
-      success: false, 
+      success: false,
       message: "Error in deleting customer API",
       error,
     });

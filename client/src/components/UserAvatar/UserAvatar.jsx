@@ -122,7 +122,7 @@ const UserAvatar = () => {
       </Dropdown>
       <Modal
         title="User Profile"
-        visible={isModalVisible}
+        open={isModalVisible}
         onOk={handleModalClose}
         onCancel={handleModalClose}
       >

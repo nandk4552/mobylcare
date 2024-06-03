@@ -19,6 +19,7 @@ import { IoHome, IoPieChartSharp } from "react-icons/io5";
 import { FaFileInvoice } from "react-icons/fa6";
 import { GrUserWorker } from "react-icons/gr";
 import { MdOutlineInventory } from "react-icons/md";
+import Title from "../Title/Title";
 
 const { Header, Sider, Content } = Layout;
 
@@ -32,7 +33,9 @@ const DefaultLayout = ({ children }) => {
 
   return (
     <Layout style={{ minHeight: "100vh", overflow: "hidden" }}>
-      {loading && <Spinner />}
+      {/* {loading && <Spinner />} */}
+      <Title />
+
       <Sider
         className="side-bar-menu"
         trigger={null}
@@ -61,7 +64,7 @@ const DefaultLayout = ({ children }) => {
             key="/bills"
             icon={<FaFileInvoice size={"1.5rem"} color="#ccc" />}
           >
-            <Link to="/bills">Bills</Link>
+            <Link to="/invoice">Invoice</Link>
           </Menu.Item>
           <Menu.Item
             key="/customers"
