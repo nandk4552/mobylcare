@@ -24,10 +24,7 @@ const generateOTP = () => {
 // Function to send OTP to user's email
 const sendOTP = async (email, otp) => {
   if (!email || !otp) {
-    return res.status(500).send({
-      success: false,
-      message: "Internal Server Erorr",
-    });
+    return;
   }
   try {
     await transporter.sendMail({
@@ -152,7 +149,7 @@ const initiatePasswordResetController = async (req, res) => {
     return res.status(500).send({
       success: false,
       message: "Error in initiating password reset",
-      error: error.message
+      error: error.message,
     });
   }
 };
