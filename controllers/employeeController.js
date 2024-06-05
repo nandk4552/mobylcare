@@ -1,23 +1,62 @@
 const employeeModel = require("../models/employeeModel");
-
+const fs = require("fs");
 // Create a new employee
 const createEmployee = async (req, res) => {
   try {
-    const employee = new employeeModel(req.body);
-    if (!employee) {
-      return res.status(404).send({
-        success: false,
-        message: "Employee failed to add",
-      });
+    const { name, role, phone, email, dateOfJoining, familyNumber, address } =
+      req.fields;
+
+    const { photoAttachment } = req.files;
+
+    // Check if all fields are provided and not empty
+    // * validation
+    switch (true) {
+      case !name:
+        return res.status(500).send({ error: "Employee name is required" });
+      case !role:
+        return res.status(500).send({ error: "Employee role is required" });
+      case !phone:
+        return res.status(500).send({ error: "Employee phone is required" });
+      case !email:
+        return res.status(500).send({ error: "Employee email is required" });
+      case !dateOfJoining:
+        return res
+          .status(500)
+          .send({ error: "Employee dateOfJoining is required" });
+      case photoAttachment && photoAttachment.size > 10000000:
+        return res.status(500).send({
+          error:
+            "Employee photoAttachment is required and should be less then 10mb",
+        });
     }
-    await employee.save();
+
+    const newEmployee = new employeeModel({
+      name,
+      role,
+      phone,
+      email,
+      dateOfJoining,
+      familyNumber,
+      address,
+    });
+    if (photoAttachment) {
+      newEmployee.photoAttachment.data = fs.readFileSync(photoAttachment.path);
+      newEmployee.photoAttachment.contentType = photoAttachment.type;
+    }
+
+    await newEmployee.save();
     res.status(201).send({
       successs: true,
       message: "Employee created successfully",
-      employee,
+      newEmployee,
     });
   } catch (error) {
-    res.status(400).json({ message: "Error creating employee", error });
+    console.error(error);
+    res.status(500).send({
+      success: true,
+      message: "Error in adding employee item",
+      error,
+    });
   }
 };
 
@@ -83,36 +122,49 @@ const updateEmployee = async (req, res) => {
         message: "Employee ID not found",
       });
     }
-    const { name, role, phone, email, dateOfJoining } = req.body;
-    const updatedEmployee = await employeeModel.findByIdAndUpdate(
-      id,
-      {
-        name,
-        role,
-        phone,
-        email,
-        dateOfJoining,
-      },
-      {
-        new: true,
-      }
-    );
-    if (!updatedEmployee) {
-      return res.status(400).sebd({
+    const { name, role, phone, email, dateOfJoining, familyNumber, address } =
+      req.fields;
+
+    const { photoAttachment } = req.files;
+
+    // Find the employee by ID
+    const employee = await employeeModel.findById(id);
+    if (!employee) {
+      return res.status(404).send({
         success: false,
         message: "Employee not found",
       });
     }
+
+    // Update employee fields
+    employee.name = name;
+    employee.role = role;
+    employee.phone = phone;
+    employee.email = email;
+    employee.dateOfJoining = dateOfJoining;
+    employee.familyNumber = familyNumber;
+    employee.address = address;
+
+    // Update photo attachment if provided
+    if (photoAttachment) {
+      employee.photoAttachment = {
+        data: fs.readFileSync(photoAttachment.path),
+        contentType: photoAttachment.type,
+      };
+    }
+
+    await employee.save();
+
     res.status(200).send({
       success: true,
       message: "Employee updated successfully",
-      updatedEmployee,
+      updatedEmployee: employee,
     });
   } catch (error) {
     res.status(500).send({
       success: false,
       message: "Error updating employee",
-      error,
+      error: error.message,
     });
   }
 };
@@ -132,7 +184,7 @@ const deleteEmployee = async (req, res) => {
 // get emp list from db
 const getEmployeesListController = async (req, res) => {
   try {
-    const employees = await employeeModel.find({});
+    const employees = await employeeModel.find({}).select("name");
     if (!employees) {
       return res.status(404).send({
         success: false,
@@ -148,6 +200,32 @@ const getEmployeesListController = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
+
+const empPhotoController = async (req, res) => {
+  try {
+    const { id } = req.params;
+    if (!id) {
+      return res.status(404).send({
+        success: false,
+        message: "Employee ID NOT FOUND",
+      });
+    }
+    const employee = await employeeModel.findById(id).select("photoAttachment");
+    if (employee && employee?.photoAttachment?.data) {
+      // setting the content type of the photoAttachment
+      res.set("Content-Type", employee?.photoAttachment?.contentType);
+      // sending the photoAttachment
+      return res.status(200).send(employee?.photoAttachment?.data);
+    }
+  } catch (error) {
+    console.log(error);
+    res.status(500).send({
+      success: false,
+      message: "Error while getting employee photo",
+      error,
+    });
+  }
+};
 module.exports = {
   createEmployee,
   getEmployees,
@@ -155,4 +233,5 @@ module.exports = {
   updateEmployee,
   deleteEmployee,
   getEmployeesListController,
+  empPhotoController,
 };

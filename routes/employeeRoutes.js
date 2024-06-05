@@ -7,10 +7,15 @@ const {
   updateEmployee,
   deleteEmployee,
   getEmployeesListController,
+  empPhotoController,
 } = require("../controllers/employeeController");
+const formidable = require("express-formidable");
 
-// Create a new employee
-router.post("/add", createEmployee);
+//* Create a new employee
+router.post("/add", formidable(), createEmployee);
+
+// * get emp  photo || GET || /api/v1/employees/emp-photo/:id
+router.get("/emp-photo/:id", empPhotoController);
 
 // Get all employees
 router.get("/get-all", getEmployees);
@@ -19,11 +24,12 @@ router.get("/get-all", getEmployees);
 router.get("/:id", getEmployeeById);
 
 // Update an employee by ID
-router.put("/:id", updateEmployee);
+router.put("/update/:id", formidable(), updateEmployee);
 
-// Delete an employee by ID
+//* Delete an employee by ID
 router.delete("/:id", deleteEmployee);
-//get only employee names || get || /api/v1/employees/list/names
+
+//* get only employee names || get || /api/v1/employees/list/names
 router.get("/list/names", getEmployeesListController);
 
 module.exports = router;

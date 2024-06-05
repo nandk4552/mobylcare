@@ -23,6 +23,12 @@ const generateOTP = () => {
 
 // Function to send OTP to user's email
 const sendOTP = async (email, otp) => {
+  if (!email || !otp) {
+    return res.status(500).send({
+      success: false,
+      message: "Internal Server Erorr",
+    });
+  }
   try {
     await transporter.sendMail({
       to: email,
@@ -121,11 +127,17 @@ const initiatePasswordResetController = async (req, res) => {
     const otp = generateOTP();
 
     // Save OTP in user document
-    const user = await userModel.findOneAndUpdate(
-      { email },
-      { $set: { otp } },
-      { new: true }
-    );
+    const user = await userModel.findOne({ email });
+    if (!user) {
+      return res.status(404).send({
+        success: false,
+        message: "Email not registered",
+      });
+    }
+
+    user.otp = otp;
+
+    await user.save();
 
     // Send OTP to user's email
     await sendOTP(email, otp);
@@ -140,6 +152,7 @@ const initiatePasswordResetController = async (req, res) => {
     return res.status(500).send({
       success: false,
       message: "Error in initiating password reset",
+      error: error.message
     });
   }
 };

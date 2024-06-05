@@ -24,6 +24,16 @@ const employeeSchema = new mongoose.Schema(
       type: Date,
       required: [true, "Date of joining is required!"],
     },
+    photoAttachment: {
+      data: Buffer,
+      contentType: String,
+    },
+    familyNumber: {
+      type: String,
+    },
+    address: {
+      type: String,
+    },
   },
   { timestamps: true }
 );

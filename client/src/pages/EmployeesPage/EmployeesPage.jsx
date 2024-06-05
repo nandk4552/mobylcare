@@ -1,63 +1,59 @@
-import { DeleteFilled, SearchOutlined, SyncOutlined } from "@ant-design/icons";
-import { Button, FloatButton, Input, Modal, Table, message } from "antd";
-import axios from "axios";
-import { useEffect, useRef, useState } from "react";
-import Highlighter from "react-highlight-words"; // Import Highlighter component
-import { FaUserEdit, FaUserPlus } from "react-icons/fa";
+import { SearchOutlined, SyncOutlined } from "@ant-design/icons";
+import { Button, FloatButton, Input, Modal, Table, message, Form } from "antd";
+import React, { useEffect, useRef, useState } from "react";
+import Highlighter from "react-highlight-words";
+import { FaPlus, FaRegEdit } from "react-icons/fa";
 import { IoIosArrowDropdown, IoIosArrowDropup } from "react-icons/io";
-import { useDispatch } from "react-redux";
+import { MdDelete } from "react-icons/md";
 import DefaultLayout from "../../components/DefaultLayout/DefaultLayout";
 import EmployeeForm from "../../components/EmployeeForm/EmployeeForm";
-import "./EmployeesPage.css";
-import { IoIosPersonAdd } from "react-icons/io";
+import EmployeeService from "../../components/EmployeeForm/EmployeeService";
 import moment from "moment";
-
-const confirm = Modal.confirm;
-const { Column } = Table;
-
+const { confirm } = Modal;
 const EmployeesPage = () => {
-  const [EmployeesData, setEmployeesData] = useState([]);
+  const [employeesData, setEmployeesData] = useState([]);
   const [searchText, setSearchText] = useState("");
-  const [loading, setLoading] = useState(false); // State to track loading state
-  const [popupModal, setPopupModal] = useState(false); // State for controlling the popup modal
-  const dispatch = useDispatch();
-  const searchInput = useRef(null);
-  const [editOrder, setEditOrder] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [popupModal, setPopupModal] = useState(false);
+  const [editEmployee, setEditEmployee] = useState(null);
   const [toggle, setToggle] = useState(false);
-
+  const searchInput = useRef(null);
+  const [isModalVisible, setIsModalVisible] = useState(false);
   const handleToggle = () => {
     setToggle(!toggle);
   };
 
   useEffect(() => {
-    getAllEmployees();
+    fetchAllEmployees();
   }, []);
 
-  const getAllEmployees = async () => {
+  const fetchAllEmployees = async () => {
+    setLoading(true);
     try {
-      setLoading(true); // Set loading to true when fetching data
-
-      const { data } = await axios.get(
-        `${import.meta.env.VITE_SERVER}/api/v1/employees/get-all`,
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        }
-      );
-
-      setLoading(false); // Set loading to false after data is fetched
-
-      const employeesWithKeys = data.employees?.map((employee, index) => ({
-        ...employee,
-        key: employee._id, // Ensure each row has a unique key
-      }));
-
-      setEmployeesData(employeesWithKeys);
+      const { employees } = await EmployeeService.getAllEmployees();
+      setEmployeesData(employees);
+      setLoading(false);
     } catch (error) {
-      setLoading(false); // Set loading to false if there's an error
-      console.error("Error fetching customers:", error);
+      console.error("Error fetching employees:", error);
     }
+    setLoading(false);
+  };
+
+  const deleteItem = async (id) => {
+    setLoading(true);
+    try {
+      await EmployeeService.deleteEmployee(id);
+      message.success("Employee deleted successfully.");
+      fetchAllEmployees();
+    } catch (error) {
+      console.log("Failed to delete Employee");
+      setLoading(false);
+    }
+  };
+
+  const handleModalClose = () => {
+    setIsModalVisible(false);
+    setEditEmployee(null);
   };
 
   const handleSearch = (selectedKeys, confirm) => {
@@ -68,12 +64,12 @@ const EmployeesPage = () => {
   const handleReset = async (clearFilters) => {
     clearFilters();
     setSearchText("");
-    await getAllEmployees(); // Fetch all customers again after resetting
+    await fetchAllEmployees();
   };
 
   const handleRefresh = async () => {
     setLoading(true);
-    await getAllEmployees();
+    await fetchAllEmployees();
     setToggle(false);
   };
 
@@ -118,6 +114,11 @@ const EmployeesPage = () => {
     ),
     onFilter: (value, record) =>
       record[dataIndex].toString().toLowerCase().includes(value.toLowerCase()),
+    onFilterDropdownOpenChange: (visible) => {
+      if (visible) {
+        setTimeout(() => searchInput.current?.select(), 100);
+      }
+    },
     render: (text) =>
       searchText ? (
         <Highlighter
@@ -131,21 +132,6 @@ const EmployeesPage = () => {
       ),
   });
 
-  const showDeleteConfirm = (record) => {
-    confirm({
-      title: "Are you sure delete this employee?",
-      okText: "Yes",
-      okType: "danger",
-      cancelText: "No",
-      onOk() {
-        handleDelete(record);
-      },
-      onCancel() {
-        console.log("Cancel");
-      },
-    });
-  };
-
   const columns = [
     {
       title: "S.No",
@@ -154,21 +140,32 @@ const EmployeesPage = () => {
       render: (text, record, index) => index + 1,
     },
     {
+      title: "Joining Date",
+      dataIndex: "dateOfJoining",
+      key: "dateOfJoining",
+      render: (record, index) => {
+        return (
+          <div
+            style={{
+              width: "100px!important",
+            }}
+          >
+            {moment(record.dateOfJoining).format("DD-MM-YYYY")}
+          </div>
+        );
+      },
+    },
+    {
       title: "Name",
       dataIndex: "name",
       key: "name",
-      ...getColumnSearchProps("name"),
     },
+    { title: "Role", dataIndex: "role", key: "role" },
     {
-      title: "Role",
-      dataIndex: "role",
-      key: "role",
-      ...getColumnSearchProps("role"),
-    },
-    {
-      title: "Phone",
+      title: "Phone Number",
       dataIndex: "phone",
       key: "phone",
+
       ...getColumnSearchProps("phone"),
     },
     {
@@ -178,210 +175,150 @@ const EmployeesPage = () => {
       ...getColumnSearchProps("email"),
     },
     {
-      title: "Date of Joining",
-      dataIndex: "dateOfJoining",
-      key: "dateOfJoining",
-      render: (text) =>
-        text
-          ? moment(text).isValid()
-            ? moment(text).format("DD-MM-YYYY")
-            : "Invalid Date"
-          : "N/A", // Format date using moment with validation
+      title: "ID Proof",
+      dataIndex: "photoAttachment",
+      key: "photoAttachment",
+      render: (text, record) => (
+        <img
+          src={`${import.meta.env.VITE_SERVER}/api/v1/employees/emp-photo/${
+            record?._id
+          }`}
+          alt={record?.name}
+          style={{ width: "50px", height: "50px" }}
+        />
+      ),
     },
     {
-      title: "Actions",
-      key: "actions",
+      title: "Family Number", 
+      dataIndex: "familyNumber",
+      key: "familyNumber",
+      ...getColumnSearchProps("familyNumber"),
+    },
+    {
+      title: "Address",
+      dataIndex: "address",
+      key: "address",
+    },
+    {
+      title: "Action",
+      key: "action",
       render: (text, record) => (
-        <div>
-          <FaUserEdit
+        <span className="d-flex align-items-center  justify-content-center ">
+          <FaRegEdit
             style={{
               cursor: "pointer",
               color: "green",
               fontSize: "20px",
-              marginRight: "1.2rem",
+              marginRight: "1rem",
             }}
-            onClick={() => {
-              setEditOrder(record);
-              setPopupModal(true);
-            }}
+            onClick={() => handleEdit(record)}
           />
-          <DeleteFilled
+
+          <MdDelete
             style={{
               cursor: "pointer",
               color: "red",
-              fontSize: "20px",
+              fontSize: "1.5rem",
             }}
-            onClick={() => {
-              showDeleteConfirm(record);
-            }}
+            onClick={() => handleDelete(record?._id)}
           />
-        </div>
+        </span>
       ),
     },
   ];
 
-  const handleSubmit = async (value) => {
-    if (editOrder === null) {
-      try {
-        dispatch({
-          type: "rootReducer/showLoading",
-        });
-        const { data } = await axios.post(
-          `${import.meta.env.VITE_SERVER}/api/v1/employees/add`,
-          {
-            ...value,
-          },
-          {
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem("token")}`,
-            },
-          }
-        );
-        message.success(data?.message);
-        setPopupModal(false);
-        getAllEmployees();
-        dispatch({
-          type: "rootReducer/hideLoading",
-        });
-      } catch (error) {
-        dispatch({
-          type: "rootReducer/hideLoading",
-        });
-        message.error("Something went wrong!");
-
-        console.log(error);
-      }
-    } else {
-      try {
-        dispatch({
-          type: "rootReducer/showLoading",
-        });
-        const { data } = await axios.put(
-          `${import.meta.env.VITE_SERVER}/api/v1/employees/${editOrder._id}`,
-          {
-            ...value,
-          },
-          {
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem("token")}`,
-            },
-          }
-        );
-        message.success(data?.message);
-        setPopupModal(false);
-        getAllEmployees();
-        dispatch({
-          type: "rootReducer/hideLoading",
-        });
-      } catch (error) {
-        dispatch({
-          type: "rootReducer/hideLoading",
-        });
-        message.error("Something went wrong!");
-
-        console.log(error);
-      }
-    }
+  const handleEdit = (employee) => {
+    setEditEmployee(employee);
+    setIsModalVisible(true);
   };
 
-  const handleDelete = async (record) => {
-    try {
-      dispatch({
-        type: "rootReducer/showLoading",
-      });
-      const { data } = await axios.delete(
-        `${import.meta.env.VITE_SERVER}/api/v1/employees/${record._id}`,
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
+  const handleDelete = async (id) => {
+    confirm({
+      title: "Are you sure you want to delete this employee?",
+      okText: "Yes",
+      okType: "danger",
+      cancelText: "No",
+      onOk: async () => {
+        try {
+          await EmployeeService.deleteEmployee(id);
+          message.success("Employee deleted successfully!");
+          await fetchAllEmployees();
+        } catch (error) {
+          console.error("Error deleting employee:", error);
         }
-      );
-      message.success(data?.message);
-      getAllEmployees();
-      dispatch({
-        type: "rootReducer/hideLoading",
-      });
-    } catch (error) {
-      dispatch({
-        type: "rootReducer/hideLoading",
-      });
-      message.error("Something went wrong!");
-      console.log(error);
-    }
+      },
+    });
   };
 
   return (
     <DefaultLayout>
-      <div className="d-flex justify-content-between align-items-center">
-        <div className="w-100">
-          <h1 className="header-title"> Employees</h1>
-        </div>
-        <div className="mb-2">
-          <FloatButton.Group
-            shape="circle"
-            type="primary"
-            style={{
-              right: 30,
-            }}
-          >
-            {toggle && (
-              <>
-                <FloatButton
-                  onClick={handleRefresh}
-                  type="primary"
-                  style={{ marginRight: "10px" }}
-                  icon={<SyncOutlined spin={loading} />}
-                />
-                <FloatButton
-                  onClick={() => {
-                    setPopupModal(true);
-                    setToggle(false);
-                  }}
-                  type="primary"
-                  tooltip={<div>Add Employee</div>}
-                  icon={<IoIosPersonAdd />}
-                />
-              </>
-            )}
-            <div onClick={handleToggle}>
-              {toggle ? (
-                <FloatButton.BackTop
-                  icon={<IoIosArrowDropdown />}
-                  type="primary"
-                  visibilityHeight={0}
-                />
-              ) : (
-                <FloatButton.BackTop
-                  icon={<IoIosArrowDropup />}
-                  type="primary"
-                  visibilityHeight={0}
-                />
+      <div className="container-fluid">
+        <div className="d-flex justify-content-between align-items-center">
+          <div className="w-100">
+            <h1 className="header-title">Employees</h1>
+          </div>
+          <div className="mb-2">
+            <FloatButton.Group
+              shape="circle"
+              type="primary"
+              style={{ right: 30 }}
+            >
+              {toggle && (
+                <>
+                  <FloatButton
+                    onClick={handleRefresh}
+                    type="primary"
+                    style={{ marginRight: "10px" }}
+                    icon={<SyncOutlined spin={loading} />}
+                  />
+                  <FloatButton
+                    onClick={() => {
+                      setIsModalVisible(true);
+                    }}
+                    type="primary"
+                    tooltip={<div>Add Employee</div>}
+                    icon={<FaPlus />}
+                  />
+                </>
               )}
-            </div>
-          </FloatButton.Group>
+              <div onClick={handleToggle}>
+                {toggle ? (
+                  <FloatButton.BackTop
+                    icon={<IoIosArrowDropdown size={"1.2rem"} />}
+                    type="primary"
+                    visibilityHeight={0}
+                  />
+                ) : (
+                  <FloatButton.BackTop
+                    icon={<IoIosArrowDropup size={"1.2rem"} />}
+                    type="primary"
+                    visibilityHeight={0}
+                  />
+                )}
+              </div>
+            </FloatButton.Group>
+          </div>
         </div>
-      </div>
-      <Table dataSource={EmployeesData} bordered loading={loading}>
-        {columns.map((column) => (
-          <Column {...column} key={column.key} />
-        ))}
-      </Table>
-
-      {/* pop modal */}
-      {popupModal && (
-        <Modal
-          title={`${editOrder !== null ? "Edit Employee" : "Add New Employee"}`}
-          open={popupModal}
-          onCancel={() => {
-            setEditOrder(null);
-            setPopupModal(false);
+        <Table
+          style={{
+            boxShadow:
+              "rgba(0, 0, 0, 0.1) 0px 1px 3px 0px, rgba(0, 0, 0, 0.06) 0px 1px 2px 0px",
+            borderRadius: "10px",
           }}
-          footer={null}
-        >
-          <EmployeeForm initialValues={editOrder} onFinish={handleSubmit} />
-        </Modal>
-      )}
+          columns={columns}
+          dataSource={employeesData}
+          rowKey="_id"
+          loading={loading}
+          bordered
+        />
+
+        <EmployeeForm
+          open={isModalVisible}
+          onClose={handleModalClose}
+          onRefresh={fetchAllEmployees}
+          employee={editEmployee}
+        />
+      </div>
     </DefaultLayout>
   );
 };
