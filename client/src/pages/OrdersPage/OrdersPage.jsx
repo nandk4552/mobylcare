@@ -11,7 +11,7 @@ import {
 } from "antd";
 import axios from "axios";
 import moment from "moment";
-import React, { useEffect, useRef, useState } from "react";
+import React, { memo, useEffect, useRef, useState } from "react";
 import Highlighter from "react-highlight-words"; // Import Highlighter component
 import { MdAssignmentAdd } from "react-icons/md";
 import { useDispatch, useSelector } from "react-redux";
@@ -629,4 +629,4 @@ const OrdersPage = () => {
   );
 };
 
-export default OrdersPage;
+export default memo(OrdersPage);

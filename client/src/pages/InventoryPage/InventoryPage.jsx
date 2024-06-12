@@ -1,4 +1,4 @@
-import React from "react";
+import React, { memo } from "react";
 import InventoryForm from "../../components/InventoryForm/InventoryForm";
 import InventoryList from "../../components/InventoryForm/InventoryList";
 import DefaultLayout from "../../components/DefaultLayout/DefaultLayout";
@@ -12,4 +12,4 @@ const Inventory = () => {
   );
 };
 
-export default Inventory;
+export default memo(Inventory);

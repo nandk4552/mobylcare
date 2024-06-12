@@ -7,9 +7,9 @@ import {
   Routes,
   useLocation,
 } from "react-router-dom";
-import { hideLoading, showLoading } from "./redux/rootReducer";
 import LoadingBar from "react-top-loading-bar";
 import LayoutLoader from "./components/DefaultLayout/LayoutLoader";
+import { hideLoading, showLoading } from "./redux/rootReducer";
 
 const PasswordReset = lazy(() =>
   import("./components/PasswordReset/PasswordReset")

@@ -1,6 +1,6 @@
 import { Button, Form, Input, message } from "antd";
 import axios from "axios";
-import React, { useEffect } from "react";
+import React, { memo, useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import "./Login.css";
@@ -105,4 +105,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default memo(Login);

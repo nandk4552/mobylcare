@@ -1,6 +1,6 @@
 import { Button, Form, Input, message } from "antd";
 import axios from "axios";
-import React, { useEffect } from "react";
+import React, { memo, useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import "./Register.css";
@@ -122,4 +122,4 @@ const Register = () => {
   );
 };
 
-export default Register;
+export default memo(Register);

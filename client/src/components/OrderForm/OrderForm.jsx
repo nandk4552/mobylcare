@@ -59,7 +59,10 @@ const OrderForm = ({ initialValues, onFinish, employees }) => {
           },
         ]}
       >
-        <Input />
+        <Input type="number" minLength={10} />
+      </Form.Item>
+      <Form.Item label="Customer Alternate Phone No" name="customerAltPhoneNo">
+        <Input type="number" minLength={10} />
       </Form.Item>
       <Form.Item
         label="Phone Model"

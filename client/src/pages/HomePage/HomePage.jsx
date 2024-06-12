@@ -14,7 +14,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import DefaultLayout from "../../components/DefaultLayout/DefaultLayout.jsx";
 import "./HomePage.css";
-import { useEffect, useState } from "react";
+import { memo, useEffect, useState } from "react";
 
 const { Option } = Select;
 const HomePage = () => {
@@ -49,19 +49,27 @@ const HomePage = () => {
       dispatch({
         type: "rootReducer/hideLoading",
       });
-      message.error("Something went wrong!");
-
       console.log(error);
     }
   };
   const fetchEmployees = async () => {
     try {
+      dispatch({
+        type: "rootReducer/showLoading",
+      });
       const { data } = await axios.get(
         `${import.meta.env.VITE_SERVER}/api/v1/employees/list/names`
       );
       setEmployees(data?.employees);
+      dispatch({
+        type: "rootReducer/hideLoading",
+      });
     } catch (error) {
-      message.error("Failed to fetch employees");
+      dispatch({
+        type: "rootReducer/hideLoading",
+      });
+
+      console.log(error);
     }
   };
 
@@ -78,7 +86,7 @@ const HomePage = () => {
         className="home-form"
       >
         <div className="w-100">
-          <h1 className="header-title">Order Registration</h1>
+          <h1 className="header-title">Customer Order Registration</h1>
         </div>
         <Row gutter={[16, 16]}>
           <Col span={24} lg={12} md={12} sm={24}>
@@ -97,7 +105,7 @@ const HomePage = () => {
           </Col>
           <Col span={24} lg={12} md={12} sm={24}>
             <Form.Item
-              label="Customer Name"
+              label="Name"
               name="customerName"
               rules={[
                 {
@@ -113,7 +121,7 @@ const HomePage = () => {
         <Row gutter={[16, 16]}>
           <Col span={24} lg={12} md={12} sm={24}>
             <Form.Item
-              label="Customer Phone No"
+              label="Phone No"
               name="customerPhoneNo"
               rules={[
                 {
@@ -123,6 +131,15 @@ const HomePage = () => {
               ]}
             >
               <Input type="number" placeholder="Customer Mobile Number" />
+            </Form.Item>
+          </Col>
+          <Col span={24} lg={12} md={12} sm={24}>
+            <Form.Item label="Alternate Phone No" name="customerAltPhoneNo">
+              <Input
+                type="number"
+                minLength={10}
+                placeholder="Customer Alternate Mobile Number"
+              />
             </Form.Item>
           </Col>
           <Col span={24} lg={12} md={12} sm={24}>
@@ -137,6 +154,33 @@ const HomePage = () => {
               ]}
             >
               <Input type="text" placeholder="Phone Model" />
+            </Form.Item>
+          </Col>
+          <Col span={24} lg={12} md={12} sm={24}>
+            <Form.Item
+              label="Sim & Memory Card"
+              name="simCardAndMemoryCard"
+              rules={[
+                {
+                  required: true,
+                  message: "Please select SIM card & memory card option!",
+                },
+              ]}
+            >
+              <Select
+                mode="multiple"
+                style={{ width: "100%" }}
+                placeholder="Please select"
+              >
+                <Option value="No sim & memory card">
+                  No SIM & Memory Card
+                </Option>
+                <Option value="Jio">Jio</Option>
+                <Option value="Airtel">Airtel</Option>
+                <Option value="VI">VI</Option>
+                <Option value="BSNL">BSNL</Option>
+                <Option value="Memory card">Memory Card</Option>
+              </Select>
             </Form.Item>
           </Col>
         </Row>
@@ -182,7 +226,7 @@ const HomePage = () => {
             </Form.Item>
           </Col>
         </Row>
-        <Row gutter={[16, 16]}>
+        {/* <Row gutter={[16, 16]}>
           <Col span={24} lg={24} md={24} sm={24}>
             <Form.Item
               label="Sim & Memory Card"
@@ -210,7 +254,7 @@ const HomePage = () => {
               </Select>
             </Form.Item>
           </Col>
-        </Row>
+        </Row> */}
         <Row gutter={[16, 16]}>
           <Col span={24} lg={12} md={12} sm={24}>
             <Form.Item label="Phone Password" name="phonePassword">
@@ -357,7 +401,6 @@ const HomePage = () => {
           </Col>
           <Col span={24} lg={12} md={12} sm={24}>
             <Form.Item label="Delivered By" name="deliveredBy">
-
               <Select placeholder="Select delivered by">
                 {employees?.map((employee) => (
                   <Option key={employee?._id} value={employee?.name}>
@@ -389,4 +432,4 @@ const HomePage = () => {
   );
 };
 
-export default HomePage;
+export default memo(HomePage);

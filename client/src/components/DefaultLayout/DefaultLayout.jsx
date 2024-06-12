@@ -1,25 +1,17 @@
-import {
-  BookOutlined,
-  CopyOutlined,
-  HomeOutlined,
-  LogoutOutlined,
-  PieChartOutlined,
-  UserOutlined,
-} from "@ant-design/icons";
+import React from "react";
 import { Button, Layout, Menu, theme } from "antd";
-import { useEffect, useState } from "react";
-import { LuArrowLeftFromLine, LuArrowRightFromLine } from "react-icons/lu";
-import { useSelector } from "react-redux";
-import { Link, useNavigate } from "react-router-dom";
-import Spinner from "../Spinner/Spinner";
-import UserAvatar from "../UserAvatar/UserAvatar";
-import "./DefaultLayout.css";
+import { useState } from "react";
 import { FaCashRegister, FaUsers } from "react-icons/fa";
-import { IoHome, IoPieChartSharp } from "react-icons/io5";
 import { FaFileInvoice } from "react-icons/fa6";
 import { GrUserWorker } from "react-icons/gr";
+import { IoHome, IoPieChartSharp } from "react-icons/io5";
+import { LuArrowLeftFromLine, LuArrowRightFromLine } from "react-icons/lu";
 import { MdOutlineInventory } from "react-icons/md";
+import { useSelector } from "react-redux";
+import { Link, useNavigate } from "react-router-dom";
 import Title from "../Title/Title";
+import UserAvatar from "../UserAvatar/UserAvatar";
+import "./DefaultLayout.css";
 
 const { Header, Sider, Content } = Layout;
 
@@ -31,10 +23,40 @@ const DefaultLayout = ({ children }) => {
     token: { colorBgContainer, borderRadiusLG },
   } = theme.useToken();
 
+  // Set the title based on the current path
+  const currentPath = window.location.pathname;
+  let pageTitle = "Mobylcare"; // default title
+  switch (currentPath) {
+    case "/":
+      pageTitle = "Home || Mobylcare";
+      break;
+    case "/charts":
+      pageTitle = "Stats || Mobylcare";
+      break;
+    case "/invoice":
+      pageTitle = "Invoice || Mobylcare";
+      break;
+    case "/customers":
+      pageTitle = "Customers || Mobylcare";
+      break;
+    case "/orders":
+      pageTitle = "Orders || Mobylcare";
+      break;
+    case "/employees":
+      pageTitle = "Employees || Mobylcare";
+      break;
+    case "/inventory":
+      pageTitle = "Inventory || Mobylcare";
+      break;
+    default:
+      pageTitle = "Mobylcare";
+      break;
+  }
+
   return (
     <Layout style={{ minHeight: "100vh", overflow: "hidden" }}>
       {/* {loading && <Spinner />} */}
-      <Title />
+      <Title title={pageTitle} />
 
       <Sider
         className="side-bar-menu"

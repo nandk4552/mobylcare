@@ -6,7 +6,7 @@ import "./ChartsPage.css";
 
 import axios from "axios";
 import { ArcElement, Chart as ChartJS, Legend, Title, Tooltip } from "chart.js";
-import { useEffect, useState } from "react";
+import { memo, useEffect, useState } from "react";
 import { Doughnut, Pie } from "react-chartjs-2";
 import { useDispatch } from "react-redux";
 import DashboardStats from "../../components/DashboardStats/DashboardStats";
@@ -276,4 +276,4 @@ const ChartsPage = () => {
   );
 };
 
-export default ChartsPage;
+export default memo(ChartsPage);

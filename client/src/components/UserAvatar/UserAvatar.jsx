@@ -1,19 +1,11 @@
-import {
-  Avatar,
-  Button,
-  Dropdown,
-  Input,
-  Menu,
-  Modal,
-  message,
-  Space,
-} from "antd";
-import axios from "axios";
-import React, { useEffect, useState } from "react";
 import { UserOutlined } from "@ant-design/icons";
-import "./UserAvatar.css";
-import { HiOutlineLogout } from "react-icons/hi";
+import { Avatar, Button, Dropdown, Input, Modal, message } from "antd";
+import axios from "axios";
+import React, { memo, useEffect, useState } from "react";
 import { FaUserCog } from "react-icons/fa";
+import { HiOutlineLogout } from "react-icons/hi";
+import { useDispatch } from "react-redux";
+import "./UserAvatar.css";
 
 const UserAvatar = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -21,9 +13,13 @@ const UserAvatar = () => {
   const [oldPassword, setOldPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmNewPassword, setConfirmNewPassword] = useState("");
+  const dispatch = useDispatch();
 
   const fetchUserDetails = async () => {
     try {
+      dispatch({
+        type: "rootReducer/showLoading",
+      });
       const { data } = await axios.get(
         `${import.meta.env.VITE_SERVER}/api/v1/user/get-user`,
         {
@@ -32,9 +28,14 @@ const UserAvatar = () => {
           },
         }
       );
-      setUserData(data.user);
+      setUserData(data?.user);
+      dispatch({
+        type: "rootReducer/hideLoading",
+      });
     } catch (error) {
-      message.error("Failed to fetch user details");
+      dispatch({
+        type: "rootReducer/hideLoading",
+      });
       console.error(error);
     }
   };
@@ -170,4 +171,4 @@ const UserAvatar = () => {
   );
 };
 
-export default UserAvatar;
+export default memo(UserAvatar);

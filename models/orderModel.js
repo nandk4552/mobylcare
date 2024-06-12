@@ -16,6 +16,9 @@ const orderSchema = new mongoose.Schema(
       type: String,
       required: [true, "Customer phone no is required!"],
     },
+    customerAltPhoneNo: {
+      type: String,
+    },
     phoneModel: {
       type: String,
       required: [true, "Phone Model is required!"],

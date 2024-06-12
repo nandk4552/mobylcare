@@ -1,6 +1,6 @@
 import { SearchOutlined, SyncOutlined } from "@ant-design/icons";
 import { Button, FloatButton, Input, Modal, Table, message, Form } from "antd";
-import React, { useEffect, useRef, useState } from "react";
+import React, { memo, useEffect, useRef, useState } from "react";
 import Highlighter from "react-highlight-words";
 import { FaPlus, FaRegEdit } from "react-icons/fa";
 import { IoIosArrowDropdown, IoIosArrowDropup } from "react-icons/io";
@@ -189,7 +189,7 @@ const EmployeesPage = () => {
       ),
     },
     {
-      title: "Family Number", 
+      title: "Family Number",
       dataIndex: "familyNumber",
       key: "familyNumber",
       ...getColumnSearchProps("familyNumber"),
@@ -323,4 +323,4 @@ const EmployeesPage = () => {
   );
 };
 
-export default EmployeesPage;
+export default memo(EmployeesPage);

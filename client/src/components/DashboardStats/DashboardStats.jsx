@@ -8,12 +8,18 @@ import {
   FaUsers,
 } from "react-icons/fa"; // Importing icons
 import "./DashboardStats.css";
+import { useNavigate } from "react-router-dom";
 
 const DashboardStats = ({ loading, stats }) => {
+  const navigate = useNavigate();
   return (
     <Row gutter={20}>
       <Col span={24} sm={12} lg={6} md={12}>
-        <Card loading={loading} bordered={false}>
+        <Card
+          loading={loading}
+          bordered={false}
+          onClick={() => navigate("/orders")}
+        >
           <div
             style={{
               display: "flex",
@@ -53,7 +59,11 @@ const DashboardStats = ({ loading, stats }) => {
         </Card>
       </Col>
       <Col span={24} sm={12} lg={6} md={12}>
-        <Card loading={loading} bordered={false}>
+        <Card
+          loading={loading}
+          bordered={false}
+          onClick={() => navigate("/customers")}
+        >
           <div
             style={{
               display: "flex",

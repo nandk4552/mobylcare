@@ -1,7 +1,7 @@
 import { EyeOutlined } from "@ant-design/icons";
 import { Button, Modal, Table } from "antd";
 import axios from "axios";
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, memo } from "react";
 import { useReactToPrint } from "react-to-print";
 import DefaultLayout from "../../components/DefaultLayout/DefaultLayout";
 import "./InvoivePage.css";
@@ -171,4 +171,4 @@ const BillsPage = () => {
   );
 };
 
-export default BillsPage;
+export default memo(BillsPage);

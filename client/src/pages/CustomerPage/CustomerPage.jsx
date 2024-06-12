@@ -1,7 +1,7 @@
 import { DeleteFilled, SearchOutlined, SyncOutlined } from "@ant-design/icons";
 import { Button, FloatButton, Input, Modal, Table, message } from "antd";
 import axios from "axios";
-import { useEffect, useRef, useState } from "react";
+import { memo, useEffect, useRef, useState } from "react";
 import Highlighter from "react-highlight-words"; // Import Highlighter component
 import { FaUserEdit, FaUserPlus } from "react-icons/fa";
 import { IoIosArrowDropdown, IoIosArrowDropup } from "react-icons/io";
@@ -347,4 +347,4 @@ const CustomerPage = () => {
   );
 };
 
-export default CustomerPage;
+export default memo(CustomerPage);

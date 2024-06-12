@@ -1,4 +1,4 @@
-import React from "react";
+import React, { memo } from "react";
 import { Helmet } from "react-helmet-async";
 const Title = ({
   title = "Mobylcare Admin Panel",
@@ -12,4 +12,4 @@ const Title = ({
   );
 };
 
-export default Title;
+export default memo(Title);
