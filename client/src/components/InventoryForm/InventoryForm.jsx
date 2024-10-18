@@ -7,6 +7,7 @@ const { useForm } = Form;
 const InventoryForm = ({ open, onClose, onRefresh, item }) => {
   const [form] = useForm();
   const [fileList, setFileList] = useState([]);
+  const [employees, setEmployees] = useState([]);
 
   useEffect(() => {
     if (item) {
@@ -102,6 +103,18 @@ const InventoryForm = ({ open, onClose, onRefresh, item }) => {
           rules={[{ required: true, message: "Please enter the item code" }]}
         >
           <Input placeholder="Item Code" />
+        </Form.Item>
+        <Form.Item name="addedBy" label="Added By" rules={[{ required: true }]}>
+          <Select>
+            {employees?.map((employee) => (
+              <Select.Option key={employee._id} value={employee._id}>
+                {employee.name}
+              </Select.Option>
+            ))}
+          </Select>
+        </Form.Item>
+        <Form.Item name="addedAt" label="Added At">
+          <DatePicker showTime disabled />
         </Form.Item>
         <Form.Item name="photo" label="Photo">
           <Upload

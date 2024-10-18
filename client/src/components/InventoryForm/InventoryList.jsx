@@ -151,6 +151,28 @@ const InventoryList = () => {
       ...getColumnSearchProps("itemCode"),
     },
     {
+      title: "Added By",
+      dataIndex: ["addedBy", "name"],
+      key: "addedBy",
+    },
+    {
+      title: "Added At",
+      dataIndex: "addedAt",
+      key: "addedAt",
+      render: (text) => new Date(text).toLocaleString(),
+    },
+    {
+      title: "Taken By",
+      dataIndex: ["takenBy", "name"],
+      key: "takenBy",
+    },
+    {
+      title: "Taken At",
+      dataIndex: "takenAt",
+      key: "takenAt",
+      render: (text) => (text ? new Date(text).toLocaleString() : "N/A"),
+    },
+    {
       title: "Photo",
       dataIndex: "photo",
       key: "photo",

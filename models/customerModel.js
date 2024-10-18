@@ -7,8 +7,9 @@ const customerSchema = new mongoose.Schema(
       required: true,
     },
     phoneNo: {
-      type: String, 
+      type: String,
       required: true,
+      // unique: true,
     },
   },
   { timestamps: true }

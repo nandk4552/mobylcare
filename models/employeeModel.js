@@ -1,41 +1,52 @@
 const mongoose = require("mongoose");
 
-const employeeSchema = new mongoose.Schema(
+const inventorySchema = new mongoose.Schema(
   {
-    name: {
+    itemName: {
       type: String,
-      required: [true, "Employee name is required!"],
+      required: true,
     },
-    role: {
-      type: String,
-      required: [true, "Employee role is required!"],
-      enum: ["Admin", "Employee"],
+    quantity: {
+      type: Number,
+      required: true,
     },
-    phone: {
-      type: String,
-      required: [true, "Employee phone number is required!"],
+    costPrice: {
+      type: Number,
+      required: true,
     },
-    email: {
+    itemCode: {
       type: String,
-      required: [true, "Employee email is required!"],
+      required: [true, "Item code is required!"],
       unique: true,
     },
-    dateOfJoining: {
-      type: Date,
-      required: [true, "Date of joining is required!"],
-    },
-    photoAttachment: {
+    photo: {
       data: Buffer,
       contentType: String,
     },
-    familyNumber: {
-      type: String,
+    addedBy: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Employee",
+      required: true,
     },
-    address: {
+    addedAt: {
+      type: Date,
+      default: Date.now,
+    },
+    takenBy: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Employee",
+      default: null,
+    },
+    takenAt: {
+      type: Date,
+      default: null,
+    },
+    branch: {
       type: String,
+      required: [true, "Branch is required"],
     },
   },
   { timestamps: true }
 );
 
-module.exports = mongoose.model("Employee", employeeSchema);
+module.exports = mongoose.model("Inventory", inventorySchema);

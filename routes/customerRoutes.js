@@ -10,6 +10,7 @@ const {
   addCustomerController,
   updateCustomerController,
   deleteCustomerController,
+  getCustomerByPhoneNumber,
 } = require("../controllers/customerController");
 
 //* EXTRACT CUSTOMER INFO || POST || api/v1/customer/extract-customers
@@ -37,5 +38,8 @@ router.put("/:id", authMiddleware, updateCustomerController);
 
 //* DELETE CUSTOMER || POST || api/v1/customer/:id
 router.delete("/:id", authMiddleware, deleteCustomerController);
+
+//* GET CUSTOMER NAME BY PHONE NUMBER || GET || api/v1/customer/:phoneNo
+router.get("/:phoneNo", authMiddleware, getCustomerByPhoneNumber);
 
 module.exports = router;

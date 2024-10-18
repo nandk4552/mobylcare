@@ -176,6 +176,30 @@ const deleteCustomerController = async (req, res) => {
     });
   }
 };
+
+const getCustomerByPhoneNumber = async (req, res) => {
+  try {
+    const { phoneNo } = req.params;
+    if (!phoneNo) {
+      return res
+        .status(400)
+        .json({ message: "Customer phone number is required" });
+    }
+    const customer = await customerModel.findOne({ phoneNo: phoneNo });
+
+    if (!customer) {
+      return res.status(404).json({ message: "Customer not found" });
+    }
+
+    return res.json({ name: customer?.name });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send({
+      message: "Server error",
+      error: error?.message || "Error in fetching get customer by phone number",
+    });
+  }
+};
 module.exports = {
   extractCustomerInfoController,
   getAllCustomerController,
@@ -183,4 +207,5 @@ module.exports = {
   addCustomerController,
   updateCustomerController,
   deleteCustomerController,
+  getCustomerByPhoneNumber,
 };

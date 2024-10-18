@@ -18,9 +18,9 @@ import { memo, useEffect, useState } from "react";
 
 const { Option } = Select;
 const HomePage = () => {
+  const [form] = Form.useForm(); // Hook for handling form instance
   const { loading } = useSelector((state) => state.rootReducer);
   const [employees, setEmployees] = useState([]);
-
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -76,6 +76,47 @@ const HomePage = () => {
   useEffect(() => {
     fetchEmployees();
   }, []);
+
+  const fetchCustomerByPhone = async (phoneNo) => {
+    try {
+      const { data } = await axios.get(
+        `${import.meta.env.VITE_SERVER}/api/v1/customer/${phoneNo}`,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+      console.log("customer data:", data); // Log to confirm the structure
+      if (data && data.name) {
+        return { name: data.name }; // Map the correct field from response
+      } else {
+        console.log("Unexpected API response format", data);
+        message.error("Customer data unavailable");
+        return null;
+      }
+    } catch (error) {
+      console.log("Error fetching customer details", error);
+      message.error("Customer not found");
+      return null;
+    }
+  };
+
+  // Fetch customer details by phone number
+  const handlePhoneNumberBlur = async (e) => {
+    const phoneNo = e.target.value;
+    if (phoneNo) {
+      const customerData = await fetchCustomerByPhone(phoneNo);
+      if (customerData) {
+        // Assuming 'name' is the correct key from the API response
+        form.setFieldsValue({ customerName: customerData.name });
+      } else {
+        message.error("Customer not found");
+        form.setFieldsValue({ customerName: "" });
+      }
+    }
+  };
+
   return (
     <DefaultLayout>
       <Form
@@ -84,6 +125,7 @@ const HomePage = () => {
         autoComplete="on"
         onFinish={handleSubmit}
         className="home-form"
+        form={form}
       >
         <div className="w-100">
           <h1 className="header-title">Customer Order Registration</h1>
@@ -130,7 +172,11 @@ const HomePage = () => {
                 },
               ]}
             >
-              <Input type="number" placeholder="Customer Mobile Number" />
+              <Input
+                type="number"
+                placeholder="Customer Mobile Number"
+                onBlur={handlePhoneNumberBlur} // Call API on blur
+              />
             </Form.Item>
           </Col>
           <Col span={24} lg={12} md={12} sm={24}>
