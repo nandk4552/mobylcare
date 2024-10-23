@@ -1,14 +1,51 @@
 import React, { useEffect, useState } from "react";
-import { Form, Input, InputNumber, Button, Upload, message, Modal } from "antd";
+import {
+  Form,
+  Input,
+  InputNumber,
+  Button,
+  Upload,
+  message,
+  Modal,
+  Select,
+  DatePicker,
+} from "antd";
 import { UploadOutlined } from "@ant-design/icons";
 import InventoryService from "./InventoryService";
-
+import { useDispatch } from "react-redux";
+import axios from "axios";
 const { useForm } = Form;
 const InventoryForm = ({ open, onClose, onRefresh, item }) => {
+  const dispatch = useDispatch();
   const [form] = useForm();
   const [fileList, setFileList] = useState([]);
   const [employees, setEmployees] = useState([]);
+  const fetchEmployees = async () => {
+    try {
+      dispatch({
+        type: "rootReducer/showLoading",
+      });
+      const { data } = await axios.get(
+        `${import.meta.env.VITE_SERVER}/api/v1/employees/list/names`
+      );
 
+      console.log("employees==>", data?.employees);
+      setEmployees(data?.employees);
+      dispatch({
+        type: "rootReducer/hideLoading",
+      });
+    } catch (error) {
+      dispatch({
+        type: "rootReducer/hideLoading",
+      });
+
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    fetchEmployees();
+  }, []);
   useEffect(() => {
     if (item) {
       form.setFieldsValue({
@@ -59,7 +96,6 @@ const InventoryForm = ({ open, onClose, onRefresh, item }) => {
   };
 
   const handleChange = ({ fileList }) => setFileList(fileList);
-
   return (
     <Modal
       title={item ? "Edit Inventory Item" : "Add Inventory Item"}
@@ -107,8 +143,8 @@ const InventoryForm = ({ open, onClose, onRefresh, item }) => {
         <Form.Item name="addedBy" label="Added By" rules={[{ required: true }]}>
           <Select>
             {employees?.map((employee) => (
-              <Select.Option key={employee._id} value={employee._id}>
-                {employee.name}
+              <Select.Option key={employee?._id} value={employee?.name}>
+                {employee?.name}
               </Select.Option>
             ))}
           </Select>

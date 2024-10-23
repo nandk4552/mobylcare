@@ -60,6 +60,7 @@ const HomePage = () => {
       const { data } = await axios.get(
         `${import.meta.env.VITE_SERVER}/api/v1/employees/list/names`
       );
+      console.log("employees==>", data?.employees);
       setEmployees(data?.employees);
       dispatch({
         type: "rootReducer/hideLoading",
@@ -76,7 +77,6 @@ const HomePage = () => {
   useEffect(() => {
     fetchEmployees();
   }, []);
-
   const fetchCustomerByPhone = async (phoneNo) => {
     try {
       const { data } = await axios.get(
@@ -87,7 +87,6 @@ const HomePage = () => {
           },
         }
       );
-      console.log("customer data:", data); // Log to confirm the structure
       if (data && data.name) {
         return { name: data.name }; // Map the correct field from response
       } else {
@@ -97,7 +96,6 @@ const HomePage = () => {
       }
     } catch (error) {
       console.log("Error fetching customer details", error);
-      message.error("Customer not found");
       return null;
     }
   };

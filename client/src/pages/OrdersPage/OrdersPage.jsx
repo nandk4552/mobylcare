@@ -579,7 +579,6 @@ const OrdersPage = () => {
     });
   };
   const [rotating, setRotating] = useState(false);
-  console.log(ordersData);
   return (
     <DefaultLayout>
       <div className="d-flex justify-content-between align-items-center">

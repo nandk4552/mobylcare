@@ -149,7 +149,7 @@ const initiatePasswordResetController = async (req, res) => {
     return res.status(500).send({
       success: false,
       message: "Error in initiating password reset",
-      error: error.message,
+      error,
     });
   }
 };

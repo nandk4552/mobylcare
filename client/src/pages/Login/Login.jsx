@@ -31,7 +31,6 @@ const Login = () => {
       dispatch({
         type: "rootReducer/hideLoading",
       });
-      message.error("Something went wrong!");
       console.log(error);
     }
   };
