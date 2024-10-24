@@ -399,16 +399,7 @@ const HomePage = () => {
             </Form.Item>
           </Col>
           <Col span={24} lg={12} md={12} sm={24}>
-            <Form.Item
-              label="Due Amount"
-              name="dueAmount"
-              rules={[
-                {
-                  required: true,
-                  message: "Please input due amount!",
-                },
-              ]}
-            >
+            <Form.Item label="Due Amount" name="dueAmount">
               <Input type="number" value={dueAmount} readOnly />{" "}
             </Form.Item>
           </Col>
