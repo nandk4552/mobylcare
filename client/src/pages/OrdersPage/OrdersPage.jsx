@@ -400,6 +400,9 @@ const OrdersPage = () => {
           case "Not Possible":
             color = "volcano";
             break;
+          case "Sold By Customer":
+            color = "blue";
+            break;
           default:
             color = "default";
         }

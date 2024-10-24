@@ -15,6 +15,7 @@ import { useNavigate } from "react-router-dom";
 import DefaultLayout from "../../components/DefaultLayout/DefaultLayout.jsx";
 import "./HomePage.css";
 import { memo, useEffect, useState } from "react";
+import moment from "moment";
 
 const { Option } = Select;
 const HomePage = () => {
@@ -140,25 +141,13 @@ const HomePage = () => {
                 },
               ]}
             >
-              <DatePicker format="YYYY-MM-DD" className="w-100" />
+              <DatePicker
+                format="DD-MM-YYYY"
+                className="w-100"
+                defaultValue={moment()}
+              />
             </Form.Item>
           </Col>
-          <Col span={24} lg={12} md={12} sm={24}>
-            <Form.Item
-              label="Name"
-              name="customerName"
-              rules={[
-                {
-                  required: true,
-                  message: "Please input customer name!",
-                },
-              ]}
-            >
-              <Input type="text" placeholder="Customer Name" />
-            </Form.Item>
-          </Col>
-        </Row>
-        <Row gutter={[16, 16]}>
           <Col span={24} lg={12} md={12} sm={24}>
             <Form.Item
               label="Phone No"
@@ -175,6 +164,22 @@ const HomePage = () => {
                 placeholder="Customer Mobile Number"
                 onBlur={handlePhoneNumberBlur} // Call API on blur
               />
+            </Form.Item>
+          </Col>
+        </Row>
+        <Row gutter={[16, 16]}>
+          <Col span={24} lg={12} md={12} sm={24}>
+            <Form.Item
+              label="Name"
+              name="customerName"
+              rules={[
+                {
+                  required: true,
+                  message: "Please input customer name!",
+                },
+              ]}
+            >
+              <Input type="text" placeholder="Customer Name" />
             </Form.Item>
           </Col>
           <Col span={24} lg={12} md={12} sm={24}>
@@ -356,6 +361,7 @@ const HomePage = () => {
                 <Option value="Completed">Completed</Option>
                 <Option value="Pending">Pending</Option>
                 <Option value="Not possible">Not possible</Option>
+                <Option value="Sold By Customer">Sold By Customer</Option>
               </Select>
             </Form.Item>
           </Col>

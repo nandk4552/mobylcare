@@ -187,6 +187,7 @@ const OrderForm = ({ initialValues, onFinish, employees }) => {
           <Option value="Completed">Completed</Option>
           <Option value="Pending">Pending</Option>
           <Option value="Not Possible">Not Possible</Option>
+          <Option value="Sold By Customer">Sold By Customer</Option>
         </Select>
       </Form.Item>
       <Form.Item

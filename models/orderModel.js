@@ -53,7 +53,7 @@ const orderSchema = new mongoose.Schema(
     },
     empOrderStatus: {
       type: String,
-      enum: ["Completed", "Pending", "Not Possible"],
+      enum: ["Completed", "Pending", "Not Possible", "Sold By Customer"],
       required: [true, "EMP Order Status is required!"],
     },
     totalAmount: {
