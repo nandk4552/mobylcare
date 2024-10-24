@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const invoiceModel = require("./invoiceModel");
+const customerModel = require("./customerModel");
 
 const orderSchema = new mongoose.Schema(
   {
@@ -86,27 +87,46 @@ const orderSchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
-
 orderSchema.pre("save", async function (next) {
+  const order = this;
+
+  // Check if the customer already exists in the database
+  const existingCustomer = await customerModel.findOne({
+    phoneNo: order.customerPhoneNo,
+  });
+
+  // If customer does not exist, create a new customer entry
+  if (!existingCustomer) {
+    const newCustomer = new customerModel({
+      name: order.customerName,
+      phoneNo: order.customerPhoneNo,
+    });
+    await newCustomer.save();
+    console.log("New customer added to the database");
+  } else {
+    console.log("Customer already exists in the database");
+  }
+
+  // If order status is completed, create an invoice
   if (
-    this.isModified("empOrderStatus") &&
-    this.empOrderStatus === "Completed"
+    order.isModified("empOrderStatus") &&
+    order.empOrderStatus === "Completed"
   ) {
-    console.log("Creating invoice for order:", this._id);
+    console.log("Creating invoice for order:", order._id);
     const invoice = new invoiceModel({
-      customerName: this.customerName,
-      customerPhoneNo: this.customerPhoneNo,
-      totalAmount: this.totalAmount,
-      mobileIssues: this.mobileIssues,
-      orderOn: this.orderOn,
-      orderID: this._id,
+      customerName: order.customerName,
+      customerPhoneNo: order.customerPhoneNo,
+      totalAmount: order.totalAmount,
+      mobileIssues: order.mobileIssues,
+      orderOn: order.orderOn,
+      orderID: order._id,
     });
     await invoice.save();
     console.log("Invoice created successfully");
   }
+
   next();
 });
-
 orderSchema.methods.toJSON = function () {
   const obj = this.toObject();
   if (obj.orderOn) {

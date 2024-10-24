@@ -20,10 +20,12 @@ import moment from "moment";
 const { Option } = Select;
 const HomePage = () => {
   const [form] = Form.useForm(); // Hook for handling form instance
-  const { loading } = useSelector((state) => state.rootReducer);
-  const [employees, setEmployees] = useState([]);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
+  const { loading } = useSelector((state) => state.rootReducer);
+  const [employees, setEmployees] = useState([]);
+  const [dueAmount, setDueAmount] = useState(0); // State to track due amount
 
   const handleSubmit = async (value) => {
     try {
@@ -116,6 +118,36 @@ const HomePage = () => {
     }
   };
 
+  const onValuesChange = (changedValues, allValues) => {
+    const { totalAmount, advanceAmount } = allValues;
+
+    // Convert totalAmount and advanceAmount to numbers
+    const totalAmt = parseFloat(totalAmount) || 0;
+    const advanceAmt = parseFloat(advanceAmount) || 0;
+    if (advanceAmt < 0) {
+      form.setFieldsValue({ advanceAmount: 0 });
+      form.setFieldsValue({ dueAmount: 0 });
+    }
+    if (totalAmt < 0) {
+      form.setFieldsValue({ totalAmount: 0 });
+      form.setFieldsValue({ dueAmount: 0 });
+    }
+
+    // Calculate due amount
+    if (totalAmt && advanceAmt) {
+      if (advanceAmt > totalAmt) {
+        message.error("Advance amount cannot be greater than the total amount");
+
+        // Set advance amount equal to total amount and due amount to 0
+        form.setFieldsValue({ advanceAmount: totalAmt });
+        setDueAmount(0); // No due amount since advanceAmount equals totalAmount
+      } else {
+        setDueAmount(totalAmt - advanceAmt); // Normal calculation
+      }
+    } else {
+      setDueAmount(totalAmt || 0); // Reset if advance is empty
+    }
+  };
   return (
     <DefaultLayout>
       <Form
@@ -125,6 +157,10 @@ const HomePage = () => {
         onFinish={handleSubmit}
         className="home-form"
         form={form}
+        initialValues={{
+          orderOn: moment(),
+        }}
+        onValuesChange={onValuesChange}
       >
         <div className="w-100">
           <h1 className="header-title">Customer Order Registration</h1>
@@ -275,35 +311,6 @@ const HomePage = () => {
             </Form.Item>
           </Col>
         </Row>
-        {/* <Row gutter={[16, 16]}>
-          <Col span={24} lg={24} md={24} sm={24}>
-            <Form.Item
-              label="Sim & Memory Card"
-              name="simCardAndMemoryCard"
-              rules={[
-                {
-                  required: true,
-                  message: "Please select SIM card & memory card option!",
-                },
-              ]}
-            >
-              <Select
-                mode="multiple"
-                style={{ width: "100%" }}
-                placeholder="Please select"
-              >
-                <Option value="No sim & memory card">
-                  No SIM & Memory Card
-                </Option>
-                <Option value="Jio">Jio</Option>
-                <Option value="Airtel">Airtel</Option>
-                <Option value="VI">VI</Option>
-                <Option value="BSNL">BSNL</Option>
-                <Option value="Memory card">Memory Card</Option>
-              </Select>
-            </Form.Item>
-          </Col>
-        </Row> */}
         <Row gutter={[16, 16]}>
           <Col span={24} lg={12} md={12} sm={24}>
             <Form.Item label="Phone Password" name="phonePassword">
@@ -372,13 +379,10 @@ const HomePage = () => {
               label="Total Amount"
               name="totalAmount"
               rules={[
-                {
-                  required: true,
-                  message: "Please input total amount!",
-                },
+                { required: true, message: "Please input the total amount!" },
               ]}
             >
-              <Input type="number" placeholder="Enter total amount" />
+              <Input type="number" placeholder="Total Amount" />
             </Form.Item>
           </Col>
         </Row>
@@ -388,10 +392,7 @@ const HomePage = () => {
               label="Advance Amount"
               name="advanceAmount"
               rules={[
-                {
-                  required: true,
-                  message: "Please input advance amount!",
-                },
+                { required: true, message: "Please input the advance amount!" },
               ]}
             >
               <Input type="number" placeholder="Enter advance amount" />
@@ -408,7 +409,7 @@ const HomePage = () => {
                 },
               ]}
             >
-              <Input type="number" placeholder="Enter due amount" />
+              <Input type="number" value={dueAmount} readOnly />{" "}
             </Form.Item>
           </Col>
         </Row>
