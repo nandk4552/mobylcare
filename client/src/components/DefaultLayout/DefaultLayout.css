@@ -64,3 +64,26 @@
   margin-top: 2rem;
   border-radius: 1rem;
 }
+
+/* Sidebar styles for small screens */
+@media (max-width: 340px) {
+  .side-bar-menu {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 10; /* Appears on top */
+    width: 75%;
+    height: 100vh;
+    background-color: #001529;
+    overflow-y: auto;
+    transform: translateX(-100%);
+    transition: transform 0.3s ease;
+  }
+
+  /* Display sidebar when toggled */
+  .side-bar-menu.show {
+    display: block;
+    transform: translateX(0);
+  }
+}

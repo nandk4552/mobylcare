@@ -9,13 +9,13 @@ import {
   message,
 } from "antd";
 import axios from "axios";
+import moment from "moment";
+import { memo, useEffect, useState } from "react";
 import { FaSave } from "react-icons/fa";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import DefaultLayout from "../../components/DefaultLayout/DefaultLayout.jsx";
 import "./HomePage.css";
-import { memo, useEffect, useState } from "react";
-import moment from "moment";
 
 const { Option } = Select;
 const HomePage = () => {
@@ -178,7 +178,7 @@ const HomePage = () => {
             >
               <DatePicker
                 format="DD-MM-YYYY"
-                className="w-100"
+                style={{ width: "100%" }}
                 initialValues={moment()}
               />
             </Form.Item>
@@ -205,7 +205,7 @@ const HomePage = () => {
         <Row gutter={[16, 16]}>
           <Col span={24} lg={12} md={12} sm={24}>
             <Form.Item
-              label="Name"
+              label="Client Name"
               name="customerName"
               rules={[
                 {
@@ -434,7 +434,7 @@ const HomePage = () => {
           <Col span={24} lg={12} md={12} sm={24}>
             <Form.Item label="Order Completed On" name="orderCompletedOn">
               <DatePicker
-                className="w-100"
+                style={{ width: "100%" }}
                 placeholder="Completed on"
                 format="DD-MM-YYYY"
               />

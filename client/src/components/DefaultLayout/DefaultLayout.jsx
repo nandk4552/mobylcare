@@ -1,6 +1,5 @@
-import React from "react";
 import { Button, Layout, Menu, theme } from "antd";
-import { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { FaCashRegister, FaUsers } from "react-icons/fa";
 import { FaFileInvoice } from "react-icons/fa6";
 import { GrUserWorker } from "react-icons/gr";
@@ -15,17 +14,31 @@ import "./DefaultLayout.css";
 
 const { Header, Sider, Content } = Layout;
 
+const useMediaQuery = (query) => {
+  const [matches, setMatches] = useState(window.matchMedia(query).matches);
+
+  useEffect(() => {
+    const media = window.matchMedia(query);
+    const listener = () => setMatches(media.matches);
+    media.addEventListener("change", listener);
+    return () => media.removeEventListener("change", listener);
+  }, [query]);
+
+  return matches;
+};
+
 const DefaultLayout = ({ children }) => {
   const navigate = useNavigate();
   const { loading } = useSelector((state) => state.rootReducer);
   const [collapsed, setCollapsed] = useState(true);
+  const isMobile = useMediaQuery("(max-width: 768px)");
   const {
     token: { colorBgContainer, borderRadiusLG },
   } = theme.useToken();
 
   // Set the title based on the current path
   const currentPath = window.location.pathname;
-  let pageTitle = "Mobylcare"; // default title
+  let pageTitle = "Mobylcare";
   switch (currentPath) {
     case "/":
       pageTitle = "Home || Mobylcare";
@@ -53,9 +66,47 @@ const DefaultLayout = ({ children }) => {
       break;
   }
 
+  // Define menu items for the sidebar
+  const menuItems = [
+    {
+      key: "/",
+      icon: <IoHome size={"1.5rem"} color="#ccc" />,
+      label: <Link to="/">Home</Link>,
+    },
+    {
+      key: "/charts",
+      icon: <IoPieChartSharp size={"1.5rem"} color="#ccc" />,
+      label: <Link to="/charts">Charts</Link>,
+    },
+    {
+      key: "/invoice",
+      icon: <FaFileInvoice size={"1.5rem"} color="#ccc" />,
+      label: <Link to="/invoice">Invoice</Link>,
+    },
+    {
+      key: "/customers",
+      icon: <FaUsers size={"1.5rem"} color="#ccc" />,
+      label: <Link to="/customers">Customers</Link>,
+    },
+    {
+      key: "/orders",
+      icon: <FaCashRegister size={"1.5rem"} color="#ccc" />,
+      label: <Link to="/orders">Orders</Link>,
+    },
+    {
+      key: "/employees",
+      icon: <GrUserWorker size={"1.5rem"} color="#ccc" />,
+      label: <Link to="/employees">Employees</Link>,
+    },
+    {
+      key: "/inventory",
+      icon: <MdOutlineInventory size={"1.5rem"} color="#ccc" />,
+      label: <Link to="/inventory">Inventory</Link>,
+    },
+  ];
+
   return (
     <Layout style={{ minHeight: "100vh", overflow: "hidden" }}>
-      {/* {loading && <Spinner />} */}
       <Title title={pageTitle} />
 
       <Sider
@@ -63,7 +114,10 @@ const DefaultLayout = ({ children }) => {
         trigger={null}
         collapsible
         collapsed={collapsed}
-        style={{ overflow: "visible" }}
+        style={{
+          display: isMobile && collapsed ? "none" : "block",
+          overflow: "visible",
+        }}
       >
         <div className="demo-logo-vertical">
           <h1>MC</h1>
@@ -72,72 +126,32 @@ const DefaultLayout = ({ children }) => {
           theme="dark"
           mode="inline"
           defaultSelectedKeys={window.location.pathname}
-        >
-          <Menu.Item key="/" icon={<IoHome size={"1.5rem"} color="#ccc" />}>
-            <Link to="/">Home</Link>
-          </Menu.Item>
-          <Menu.Item
-            key="/charts"
-            icon={<IoPieChartSharp size={"1.5rem"} color="#ccc" />}
-          >
-            <Link to="/charts">Charts</Link>
-          </Menu.Item>
-          <Menu.Item
-            key="/bills"
-            icon={<FaFileInvoice size={"1.5rem"} color="#ccc" />}
-          >
-            <Link to="/invoice">Invoice</Link>
-          </Menu.Item>
-          <Menu.Item
-            key="/customers"
-            icon={<FaUsers size={"1.5rem"} color="#ccc" />}
-          >
-            <Link to="/customers">Customers</Link>
-          </Menu.Item>
-          <Menu.Item
-            key="/orders"
-            icon={<FaCashRegister size={"1.5rem"} color="#ccc" />}
-          >
-            <Link to="/orders">Orders</Link>
-          </Menu.Item>
-          <Menu.Item
-            key="/employees"
-            icon={<GrUserWorker size={"1.5rem"} color="#ccc" />}
-          >
-            <Link to="/employees">Employees</Link>
-          </Menu.Item>
-          <Menu.Item
-            key="/inventory"
-            icon={<MdOutlineInventory size={"1.5rem"} color="#ccc" />}
-          >
-            <Link to="/inventory">Inventory</Link>
-          </Menu.Item>
-        </Menu>
+          items={menuItems} // Use the `items` prop instead of `children`
+        />
       </Sider>
+
       <Layout>
         <Header
           style={{ background: colorBgContainer, padding: 0 }}
-          className="d-flex  align-items-center justify-content-between"
+          className="d-flex align-items-center justify-content-between"
         >
-          <div>
-            <Button
-              type="text"
-              icon={
-                collapsed ? (
-                  <LuArrowRightFromLine color="#001529" size="1.5rem" />
-                ) : (
-                  <LuArrowLeftFromLine color="#001529" size="1.5rem" />
-                )
-              }
-              onClick={() => setCollapsed(!collapsed)}
-              style={{
-                fontSize: "16px",
-                width: 64,
-                height: 64,
-                color: "white",
-              }}
-            />
-          </div>
+          <Button
+            type="text"
+            icon={
+              collapsed ? (
+                <LuArrowRightFromLine color="#001529" size="1.5rem" />
+              ) : (
+                <LuArrowLeftFromLine color="#001529" size="1.5rem" />
+              )
+            }
+            onClick={() => setCollapsed(!collapsed)}
+            style={{
+              fontSize: "16px",
+              width: 64,
+              height: 64,
+              color: "white",
+            }}
+          />
           <div className="me-3">
             <UserAvatar />
           </div>
