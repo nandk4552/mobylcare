@@ -150,7 +150,6 @@ const getOrderByIDController = async (req, res) => {
   }
 };
 
-
 const updateOrderByIDController = async (req, res) => {
   try {
     // get id from params
@@ -496,6 +495,80 @@ const getStatsController = async (req, res) => {
   }
 };
 
+const assignAnEmployeeToOrderController = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { employeeId } = req.body;
+    if (!id) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Order ID is required" });
+    }
+    if (!employeeId) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Employee ID is required" });
+    }
+    const order = await orderModel.findByIdAndUpdate(
+      id,
+      { assignedTo: employeeId },
+      { new: true }
+    );
+    if (!order) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Order not found" });
+    }
+    res.json({ success: true, order });
+  } catch (error) {
+    res.status(400).json({ success: false, error: error.message });
+  }
+};
+
+const assignedEmployeeUpdateOrderStatusController = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { status } = req.body;
+    if (!id) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Order ID is required" });
+    }
+    if (!status) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Order status is required" });
+    }
+    const order = await orderModel.findById(id);
+    if (!order) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Order not found" });
+    }
+    order.empOrderStatus = status;
+    if (status === "Completed") order.orderCompletedOn = Date.now();
+    await order.save();
+    res.json({ success: true, order });
+  } catch (error) {
+    res.status(400).json({ success: false, error: error.message });
+  }
+};
+const getOrderByScanningQRCodeController = async (req, res) => {
+  try {
+    const { id } = req.params;
+    if (!id) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Order ID is required" });
+    }
+    const order = await orderModel
+      .findById({ _id: id })
+      .populate("assignedTo", "name email phone role");
+    res.json({ success: true, order });
+  } catch (error) {
+    res.status(404).json({ success: false, error: "Order not found" });
+  }
+};
 module.exports = {
   createOrderController,
   getAllOrdersController,
@@ -511,4 +584,7 @@ module.exports = {
   getMonthlyOrdersController,
   getLatestOrdersController,
   getStatsController,
+  assignAnEmployeeToOrderController,
+  assignedEmployeeUpdateOrderStatusController,
+  getOrderByScanningQRCodeController,
 };

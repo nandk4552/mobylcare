@@ -13,20 +13,23 @@ import axios from "axios";
 import moment from "moment";
 import React, { memo, useEffect, useRef, useState } from "react";
 import Highlighter from "react-highlight-words"; // Import Highlighter component
+import { FaEdit, FaQrcode } from "react-icons/fa";
 import { MdAssignmentAdd } from "react-icons/md";
 import { useDispatch, useSelector } from "react-redux";
 import DefaultLayout from "../../components/DefaultLayout/DefaultLayout";
-
-import { FaEdit } from "react-icons/fa";
 import OrderForm from "../../components/OrderForm/OrderForm";
+import QRCodeModal from "../../components/QRCodeModal/QRCodeModal";
 import "./OrdersPage.css";
 const confirm = Modal.confirm;
 const { Column } = Table;
 
 const OrdersPage = () => {
   const loading = useSelector((state) => state.rootReducer.loading);
-
   const dispatch = useDispatch();
+
+  // state variables
+  const [qrVisible, setQrVisible] = useState(false);
+  const [qrOrderData, setQrOrderData] = useState(null);
   const [ordersData, setOrdersData] = useState([]);
   const [popupModal, setPopupModal] = useState(false);
   const [editOrder, setEditOrder] = useState(null);
@@ -539,6 +542,16 @@ const OrdersPage = () => {
 
       render: (text, record) => (
         <div className="d-flex align-items-center  justify-content-center ">
+          <FaQrcode
+            style={{
+              cursor: "pointer",
+              color: "black",
+              fontSize: "20px",
+              marginRight: "0.5rem",
+            }}
+            onClick={() => showQRCode(record)}
+          />
+
           <FaEdit
             style={{
               cursor: "pointer",
@@ -565,7 +578,6 @@ const OrdersPage = () => {
       ),
     },
   ];
-
   const showDeleteConfirm = (record) => {
     confirm({
       title: "Are you sure delete this order?",
@@ -582,6 +594,11 @@ const OrdersPage = () => {
     });
   };
   const [rotating, setRotating] = useState(false);
+  const showQRCode = (order) => {
+    setQrOrderData(order);
+    setQrVisible(true);
+  };
+
   return (
     <DefaultLayout>
       <div className="d-flex justify-content-between align-items-center">
@@ -627,6 +644,12 @@ const OrdersPage = () => {
           />
         </Modal>
       )}
+
+      <QRCodeModal
+        qrVisible={qrVisible}
+        setQrVisible={setQrVisible}
+        qrOrderData={qrOrderData}
+      />
     </DefaultLayout>
   );
 };

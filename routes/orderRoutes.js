@@ -16,6 +16,9 @@ const {
   getMonthlyOrdersController,
   getLatestOrdersController,
   getStatsController,
+  assignAnEmployeeToOrderController,
+  assignedEmployeeUpdateOrderStatusController,
+  getOrderByScanningQRCodeController,
 } = require("../controllers/orderController");
 
 const router = express.Router();
@@ -75,4 +78,20 @@ router.get("/charts/latest", authMiddleware, getLatestOrdersController);
 //* GET STATS || GET || api/v1/order/stats
 router.get("/dashboard/stats", authMiddleware, getStatsController);
 
+//* ASSIGN AN EMPLOYEE TO AN ORDER || PUT || api/v1/order/emp/:id/assign
+router.put(
+  "/emp/:id/assign",
+  authMiddleware,
+  assignAnEmployeeToOrderController
+);
+
+//* ASSIGNED EMPLOYEE UPDATE ORDER STATUS || PUT || api/v1/order/emp/:id/status
+router.put(
+  "/emp/:id/status",
+  authMiddleware,
+  assignedEmployeeUpdateOrderStatusController
+);
+//* EMPLOYEE GETS THE ORDER BY SCANNING THE QR CODE || GET || api/v1/order/emp/:id
+router.get("/emp/:id", getOrderByScanningQRCodeController);
+        
 module.exports = router;

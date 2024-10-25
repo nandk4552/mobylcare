@@ -63,7 +63,6 @@ const HomePage = () => {
       const { data } = await axios.get(
         `${import.meta.env.VITE_SERVER}/api/v1/employees/list/names`
       );
-      console.log("employees==>", data?.employees);
       setEmployees(data?.employees);
       dispatch({
         type: "rootReducer/hideLoading",
@@ -180,7 +179,7 @@ const HomePage = () => {
               <DatePicker
                 format="DD-MM-YYYY"
                 className="w-100"
-                defaultValue={moment()}
+                initialValues={moment()}
               />
             </Form.Item>
           </Col>

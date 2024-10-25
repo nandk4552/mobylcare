@@ -29,7 +29,6 @@ const InventoryForm = ({ open, onClose, onRefresh, item }) => {
         `${import.meta.env.VITE_SERVER}/api/v1/employees/list/names`
       );
 
-      console.log("employees==>", data?.employees);
       setEmployees(data?.employees);
       dispatch({
         type: "rootReducer/hideLoading",

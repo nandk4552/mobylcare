@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 const invoiceModel = require("./invoiceModel");
 const customerModel = require("./customerModel");
-
+const QRCode = require("qrcode");
 const orderSchema = new mongoose.Schema(
   {
     orderOn: {
@@ -84,6 +84,8 @@ const orderSchema = new mongoose.Schema(
     orderCompletedOn: {
       type: Date,
     },
+    assignedTo: { type: mongoose.Schema.Types.ObjectId, ref: "Employee" },
+    qrCodeURL: { type: String },
   },
   { timestamps: true }
 );
@@ -105,6 +107,12 @@ orderSchema.pre("save", async function (next) {
     console.log("New customer added to the database");
   } else {
     console.log("Customer already exists in the database");
+  }
+
+  // Generate QR code URL for the order
+  if (!order?.qrCodeURL) {
+    const qrCodeData = `${process.env.BASE_URL}/order/emp/${order?._id}`;
+    order.qrCodeURL = await QRCode.toDataURL(qrCodeData);
   }
 
   // If order status is completed, create an invoice

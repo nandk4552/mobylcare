@@ -22,7 +22,7 @@ const EmployeeForm = ({ open, onClose, onRefresh, employee }) => {
   const [form] = Form.useForm();
 
   useEffect(() => {
-    if (employee) {
+    if (form && employee) {
       form.setFieldsValue({
         name: employee.name,
         role: employee.role,
